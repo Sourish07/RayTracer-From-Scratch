@@ -22,3 +22,5 @@ class Sphere:
     
     def normal_at(self, pos):
         return (pos - self.center).normalize()
+    
+    

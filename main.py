@@ -46,7 +46,7 @@ def color_ray(r, scene, depth):
     normal = obj_hit.normal_at(hit_pos)
     hit_pos += normal * 0.001
     
-    #color += obj_hit.material.color
+    #color += Color(0.1, 0.1, 0.1)
     #return color
     #print(color)
     for light in scene.lights:
@@ -55,6 +55,7 @@ def color_ray(r, scene, depth):
         if not t:
             # Direct path to light
             #print(light.color * max(normal.dot(light_ray.direction), 0))
+            # Lambert cosine law
             color += obj_hit.material.color * max(normal.dot(light_ray.direction), 0)
             
             #half_vector = (light_ray.direction + scene.camera).normalize()
@@ -62,8 +63,9 @@ def color_ray(r, scene, depth):
             #print(color)
             #print("\n\n\n")
             
-    bounce_ray = Ray(hit_pos, Vector.random())
-    return color# + color_ray(bounce_ray, objects, lights, depth - 1) * 0.25
+    bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
+    assert(isinstance(bounce_ray, Ray))
+    return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
     #return color_at(obj_hit, r(t), normal, objects, lights)
 
 
@@ -76,7 +78,7 @@ def render():
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
     
-    MAX_DEPTH = 5
+    MAX_DEPTH = 50
     
     x0 = -1
     x1 = 1
@@ -86,15 +88,21 @@ def render():
     y_step = (y1 - y0) / (HEIGHT - 1)
     
     camera = Point(z=1)
-    red = Material(Color(1, 0, 0))
-    blue = Material(Color(0, 1, 0))
-    green = Material(Color(0, 0, 1))
-    gray = Material(Color(0.5, 0.5, 0.5))
-    objects = [Sphere(Point(0, 0, -1), 0.5, red), 
-               Sphere(Point(-1.25, 0, -1.5), 0.5, blue), 
-               Sphere(Point(1.35, 0, -2), 0.5, green),
+    red = Material(Color(1, 0, 0), reflection=1)
+    green = Material(Color(0, 1, 0), reflection=1)
+    blue = Material(Color(0, 0, 1), reflection=1)
+    
+    gold = Material(Color(0.8, 0.6, 0.2), reflection=1)
+    silver = Material(Color(0.3, 0.3, 0.3), reflection=1)
+    bronze = Material(Color(0.7, 0.3, 0.3), reflection=1)
+    
+    gray = Material(Color(0.5, 0.5, 0.5), reflection=1)
+    objects = [Sphere(Point(0, 0, -1), 0.5, gold), 
+               Sphere(Point(-1.25, 0, -1.5), 0.5, silver), 
+               Sphere(Point(1.35, 0, -2), 0.5, bronze),
                Sphere(Point(0, -100000.5, 0), -100000, gray)]
-    lights = [Light(Point(x=1, y=1, z=1))]
+    lights = [Light(Point(x=1, y=1, z=1)),
+              Light(Point(x=-1, y=5, z=5))]
     
     scene = Scene(objects, lights, camera)
     
