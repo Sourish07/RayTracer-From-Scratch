@@ -1,4 +1,5 @@
 import math
+from random import random
 
 class Vector:
     def __init__(self, x=0, y=0, z=0):
@@ -23,7 +24,7 @@ class Vector:
         return self
     
     def __mul__(self, other):
-        assert(isinstance(other, float))
+        assert(isinstance(other, float) or isinstance(other, int))
         return Vector(self.x * other, self.y * other, self.z * other)
     
     def __rmul__(self, other):
@@ -58,3 +59,14 @@ class Vector:
     
     def __str__(self):
         return f"[{self.x}, {self.y}, {self.z}]"
+    
+    
+    @classmethod
+    def random(cls):
+        while True:
+            x = random() - 0.5 * 2
+            y = random() - 0.5 * 2
+            z = random() - 0.5 * 2
+            v = cls(x, y, z)
+            if v.length() <= 1:
+                return v.normalize()

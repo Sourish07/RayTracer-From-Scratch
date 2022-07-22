@@ -8,3 +8,6 @@ class Ray:
         
     def at(self, t):
         return self.origin + t * self.direction
+    
+    def __call__(self, t):
+        return self.at(t)

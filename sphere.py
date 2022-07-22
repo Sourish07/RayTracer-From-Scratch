@@ -1,10 +1,11 @@
-from sympy import discriminant
+from math import sqrt
 
 
 class Sphere:
-    def __init__(self, center, radius):
+    def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius
+        self.material = material
         
     def hit(self, r):
         oc = r.origin - self.center
@@ -12,5 +13,12 @@ class Sphere:
         b = 2 * oc.dot(r.direction)
         c = oc.dot(oc) - self.radius**2
         discriminant = b**2 - 4 * a * c
-        # print(discriminant)
-        return discriminant > 0
+        
+        if discriminant > 0:
+            min_root = (-b - sqrt(discriminant)) / 2*a
+            if min_root > 0:
+                return min_root
+        return None
+    
+    def normal_at(self, pos):
+        return (pos - self.center).normalize()
