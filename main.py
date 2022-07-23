@@ -14,6 +14,15 @@ from utilities import print_progress_bar, write_color
 
 
 def find_nearest_object(r, objects):
+    """Iterates through all objects in a scene and calculates the closest object the ray has hit
+
+    Args:
+        r (Ray): The current ray being cast
+        objects (List[Shapes]): A list of all current objects in scene
+
+    Returns:
+        tuple(Object, float): Return tuples pair for object that is the closest, along with t-value for ray. If t-value is None, no objects were hit
+    """
     distance = None
     obj = None
     for o in objects:
