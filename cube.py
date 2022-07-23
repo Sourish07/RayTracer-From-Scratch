@@ -10,7 +10,6 @@ class Cube(Geometry):
         self.min = self.center - Vector(radius, radius, radius)
         self.max = self.center + Vector(radius, radius, radius)
     
-    
     def hit(self, r):
         t0 = (self.min - r.origin) / (r.direction)
         t1 = (self.max - r.origin) / (r.direction)
@@ -24,7 +23,6 @@ class Cube(Geometry):
             elif t_max > 0:
                 return t_max
         return None
-        
     
     def normal_at(self, pos):
         pos -= self.center
