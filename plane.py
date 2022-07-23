@@ -1,7 +1,8 @@
-from math import sqrt
+
+from geometry import Geometry
 
 
-class Plane:
+class Plane(Geometry):
     def __init__(self, point, normal, material):
         self.point = point
         self.normal = normal

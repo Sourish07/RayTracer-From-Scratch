@@ -69,9 +69,9 @@ class Vector:
     @classmethod
     def random(cls):
         while True:
-            x = random() - 0.5 * 2
-            y = random() - 0.5 * 2
-            z = random() - 0.5 * 2
+            x = (random() - 0.5) * 2
+            y = (random() - 0.5) * 2
+            z = (random() - 0.5) * 2
             v = cls(x, y, z)
             if v.length() <= 1:
                 return v.normalize()

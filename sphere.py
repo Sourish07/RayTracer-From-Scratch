@@ -1,7 +1,9 @@
 from math import sqrt
 
+from geometry import Geometry
 
-class Sphere:
+
+class Sphere(Geometry):
     def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius

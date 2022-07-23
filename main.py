@@ -8,6 +8,7 @@ from light import Light
 from plane import Plane
 from cube import Cube
 from material import Material
+from random import random
 from utilities import print_progress_bar, write_color
 
 
@@ -50,11 +51,12 @@ def color_ray(r, scene, depth):
     
 
 def render():
-    HEIGHT = 720
+    HEIGHT = 360
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
     
     MAX_DEPTH = 50
+    NUM_SAMPLES = 50
     
     x0 = -1
     x1 = 1
@@ -70,13 +72,12 @@ def render():
     
     gold = Material(Color(0.8, 0.6, 0.2))
     silver = Material(Color(0.3, 0.3, 0.3))
-    bronze = Material(Color(0.7, 0.3, 0.3))
+    bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
     
     gray = Material(Color(0.5, 0.5, 0.5))
     objects = [Sphere(Point(0, 0, -1), 0.5, gold), 
                Cube(Point(-1.25, 0, -1.5), 0.5, silver), 
                Cube(Point(1.35, 0, -2), 0.5, bronze),
-               #Sphere(Point(0, -10000.5, 0), -10000, gray)]
                Plane(Point(y=-0.5), Vector(y=1), gray)]
     
     # objects = [Sphere(Point(0, 0, -1), 0.5, gold), 
@@ -99,9 +100,14 @@ def render():
             print_progress_bar((HEIGHT - j) / HEIGHT)
             v = y0 + y_step * j
             for i in range(WIDTH):
+                c = Color()
                 u = x0 + x_step * i
-                r = Ray(camera, Point(u, v) - camera)
-                c = color_ray(r, scene, depth=MAX_DEPTH)
+                for _ in range(NUM_SAMPLES):
+                    _u = u + (random() - 0.5) / (WIDTH - 1)
+                    _v = v + (random() - 0.5) / (HEIGHT - 1)
+                    r = Ray(camera, Point(_u, _v) - camera)
+                    c += color_ray(r, scene, depth=MAX_DEPTH)
+                c = c / NUM_SAMPLES
                 write_color(f, c)
 
 
