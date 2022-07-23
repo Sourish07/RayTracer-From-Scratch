@@ -5,19 +5,11 @@ from scene import Scene
 from sphere import Sphere
 from vector import Vector
 from light import Light
+from plane import Plane
+from cube import Cube
 from material import Material
+from utilities import print_progress_bar, write_color
 
-def print_progress_bar(percentage):
-    num = int(percentage * 20)
-    print(f"[{'=' * num}{' ' * (20-num)}] {int(percentage * 100)}%", end='\r')
-    
-def clamp(n, _min, _max):
-    return max(_min, min(n, _max))
-    
-
-def write_color(f, color):
-    f.write(f"{int(255 * clamp(color.x, 0, 1))} {int(255 * clamp(color.y, 0, 1))} {int(255 * clamp(color.z, 0, 1))}\n")
-    
 
 def find_nearest_object(r, objects):
     distance = None
@@ -28,10 +20,7 @@ def find_nearest_object(r, objects):
         if distance is None or t < distance:
             distance = t
             obj = o
-    
     return obj, distance
-
-
 
 
 def color_ray(r, scene, depth):
@@ -46,35 +35,22 @@ def color_ray(r, scene, depth):
     normal = obj_hit.normal_at(hit_pos)
     hit_pos += normal * 0.001
     
-    #color += Color(0.1, 0.1, 0.1)
-    #return color
-    #print(color)
     for light in scene.lights:
         light_ray = Ray(hit_pos, light.pos - hit_pos)
         _, t = find_nearest_object(light_ray, scene.objects)
         if not t:
             # Direct path to light
-            #print(light.color * max(normal.dot(light_ray.direction), 0))
             # Lambert cosine law
             color += obj_hit.material.color * max(normal.dot(light_ray.direction), 0)
-            
-            #half_vector = (light_ray.direction + scene.camera).normalize()
-            #color += light.color
-            #print(color)
-            #print("\n\n\n")
             
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
     assert(isinstance(bounce_ray, Ray))
     return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
-    #return color_at(obj_hit, r(t), normal, objects, lights)
-
-
-#def color_at(obj, pos, normal, objects, lights):
     
     
 
 def render():
-    HEIGHT = 240
+    HEIGHT = 720
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
     
@@ -87,26 +63,36 @@ def render():
     y1 = x1 / ASPECT_RATIO
     y_step = (y1 - y0) / (HEIGHT - 1)
     
-    camera = Point(z=1)
-    red = Material(Color(1, 0, 0), reflection=1)
-    green = Material(Color(0, 1, 0), reflection=1)
-    blue = Material(Color(0, 0, 1), reflection=1)
+    camera = Point(x=0, y=0, z=1)
+    red = Material(Color(1, 0, 0))
+    green = Material(Color(0, 1, 0))
+    blue = Material(Color(0, 0, 1))
     
-    gold = Material(Color(0.8, 0.6, 0.2), reflection=1)
-    silver = Material(Color(0.3, 0.3, 0.3), reflection=1)
-    bronze = Material(Color(0.7, 0.3, 0.3), reflection=1)
+    gold = Material(Color(0.8, 0.6, 0.2))
+    silver = Material(Color(0.3, 0.3, 0.3))
+    bronze = Material(Color(0.7, 0.3, 0.3))
     
-    gray = Material(Color(0.5, 0.5, 0.5), reflection=1)
+    gray = Material(Color(0.5, 0.5, 0.5))
     objects = [Sphere(Point(0, 0, -1), 0.5, gold), 
-               Sphere(Point(-1.25, 0, -1.5), 0.5, silver), 
-               Sphere(Point(1.35, 0, -2), 0.5, bronze),
-               Sphere(Point(0, -100000.5, 0), -100000, gray)]
+               Cube(Point(-1.25, 0, -1.5), 0.5, silver), 
+               Cube(Point(1.35, 0, -2), 0.5, bronze),
+               #Sphere(Point(0, -10000.5, 0), -10000, gray)]
+               Plane(Point(y=-0.5), Vector(y=1), gray)]
+    
+    # objects = [Sphere(Point(0, 0, -1), 0.5, gold), 
+    #            Sphere(Point(-1.25, 0, -1.5), 0.5, silver), 
+    #            Sphere(Point(1.35, 0, -2), 0.5, bronze),
+    #            #Sphere(Point(0, -10000.5, 0), -10000, gray)]
+    #            Plane(Point(y=-0.5), Vector(y=1), gray)]
+    
+    # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
+    #            Cube(Point(1, 0, -2), 0.25, gold)]
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
     
     scene = Scene(objects, lights, camera)
     
-    with open("output.ppm", "w") as f:
+    with open("output-sk.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
         
         for j in range(HEIGHT - 1, -1, -1):

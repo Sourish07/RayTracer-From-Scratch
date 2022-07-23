@@ -8,6 +8,8 @@ class Vector:
         self.z = z
         
     def __add__(self, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Vector(self.x + other, self.y + other, self.z + other)
         return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
     
     def __iadd__(self, other):
@@ -17,7 +19,8 @@ class Vector:
         return self
                           
     def __sub__(self, other):
-        return Vector(self.x - other.x, self.y - other.y, self.z - other.z)
+        #return Vector(self.x - other.x, self.y - other.y, self.z - other.z)
+        return self + (-1 * other)
     
     def __isub__(self, other):
         self += (other * -1)
@@ -45,6 +48,8 @@ class Vector:
         return self
     
     def __truediv__(self, other):
+        if isinstance(other, Vector):
+            return Vector(self.x / other.x, self.y / other.y, self.z / other.z)
         assert(isinstance(other, float) or isinstance(other, int))
         return Vector(self.x / other, self.y / other, self.z / other)
     

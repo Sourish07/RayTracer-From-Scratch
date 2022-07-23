@@ -15,9 +15,9 @@ class Sphere:
         discriminant = b**2 - 4 * a * c
         
         if discriminant > 0:
-            min_root = (-b - sqrt(discriminant)) / 2*a
-            if min_root > 0:
-                return min_root
+            t = (-b - sqrt(discriminant)) / 2*a
+            if t > 0:
+                return t
         return None
     
     def normal_at(self, pos):
