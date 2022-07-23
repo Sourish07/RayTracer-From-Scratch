@@ -1,8 +1,8 @@
 from math import sqrt
-from geometry import Geometry
+from shapes.shape import Shape
 from vector import Vector
 
-class Cube(Geometry):
+class Cube(Shape):
     def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius

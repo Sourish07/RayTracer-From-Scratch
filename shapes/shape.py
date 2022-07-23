@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Geometry(ABC):
+class Shape(ABC):
     @abstractmethod
     def hit(self, r):
         raise NotImplementedError()

@@ -1,13 +1,14 @@
+from vector import Vector
 from color import Color
 from point import Point
+
 from ray import Ray
 from scene import Scene
-from sphere import Sphere
-from vector import Vector
+
+from shapes.shapes import *
 from light import Light
-from plane import Plane
-from cube import Cube
 from material import Material
+
 from random import random
 from utilities import print_progress_bar, write_color
 
@@ -32,6 +33,8 @@ def color_ray(r, scene, depth):
 
     obj_hit, t = find_nearest_object(r, scene.objects)
     if t is None:
+        # _y = (r.direction.normalize().y + 1) * 0.5
+        # return (1.0 - _y) * Color(1.0, 1.0, 1.0) + _y * Color(0.5, 0.7, 1.0)
         return color
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
@@ -52,7 +55,7 @@ def color_ray(r, scene, depth):
 
 
 def render():
-    HEIGHT = 360
+    HEIGHT = 120
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
