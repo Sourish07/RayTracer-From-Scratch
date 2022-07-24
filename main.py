@@ -32,6 +32,7 @@ def find_nearest_object(r, objects):
         if distance is None or t < distance:
             distance = t
             obj = o
+    #print("HITPOS, ", r(distance) if distance is not None else "inf");
     return obj, distance
 
 
@@ -42,14 +43,14 @@ def color_ray(r, scene, depth):
 
     obj_hit, t = find_nearest_object(r, scene.objects)
     if t is None:
-        # _y = (r.direction.normalize().y + 1) * 0.5
-        # return (1.0 - _y) * Color(1.0, 1.0, 1.0) + _y * Color(0.5, 0.7, 1.0)
+        _y = (r.direction.normalize().y + 1) * 0.5
+        return (1.0 - _y) * Color(1.0, 1.0, 1.0) + _y * Color(0.5, 0.7, 1.0)
         return color
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
-    hit_pos += normal * 0.001
+    #hit_pos += normal * 0.001
 
-    if not isinstance(obj_hit.material, Glass):
+    if False and not isinstance(obj_hit.material, Glass):
         for light in scene.lights:
             light_ray = Ray(hit_pos, light.pos - hit_pos)
             _, t = find_nearest_object(light_ray, scene.objects)
@@ -57,9 +58,13 @@ def color_ray(r, scene, depth):
                 # Direct path to light
                 # Lambert cosine law
                 color += obj_hit.material.color * light.color * light.intensity * max(normal.dot(light_ray.direction), 0) 
-
+    else:
+        #pass
+        color += obj_hit.material.color
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
-    return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
+    
+    #return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
+    return color * color_ray(bounce_ray, scene, depth - 1)
 
 
 def render():
@@ -68,7 +73,7 @@ def render():
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
     MAX_DEPTH = 50
-    NUM_SAMPLES = 50
+    NUM_SAMPLES = 25
 
     x0 = -1
     x1 = 1
@@ -87,19 +92,30 @@ def render():
     bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
 
     gray = Material(Color(0.5, 0.5, 0.5))
-    objects = [Sphere(Point(0, 0, -1), 0.5, gold),
-               Cube(Point(-1.25, 0, -1.5), 0.5, silver),
-               Cube(Point(1.35, 0, -2), 0.5, bronze),
-               Plane(Point(y=-0.5), Vector(y=1), gray)]
+    
+    glass = Glass()
+    # objects = [Sphere(Point(0, 0, -1), 0.5, gold),
+    #            Cube(Point(-1.25, 0, -1.5), 0.5, silver),
+    #            Cube(Point(1.35, 0, -2), 0.5, bronze),
+    #            Plane(Point(y=-0.5), Vector(y=1), gray)]
 
     # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
-    #            Sphere(Point(0, 0, -2), 0.25, glass)]
+    #            Sphere(Point(0, 0, -1), 0.5, glass),]
+               #Sphere(Point(0, 0, -2), 0.5, gold)]
+               
+    objects = [Sphere(Point( 0.0, -100.5, -1.0), 100, gray),
+               Sphere(Point(0, 0, -1), 0.5, glass)]
     
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
-
+    
+    #lights = []
     scene = Scene(objects, lights, camera)
-
+    # r = Ray(Point(x=0.5, y=0.5, z=0), Vector(z=-1))
+    # color_ray(r, scene, depth=MAX_DEPTH)
+    # if True:
+    #     return
+    
     with open("output-sk.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 

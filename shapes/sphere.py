@@ -18,8 +18,13 @@ class Sphere(Shape):
         
         if discriminant > 0:
             t = (-b - sqrt(discriminant)) / 2*a
-            if t > 0:
+            if t > 1e-6:
                 return t
+            else:
+                t = (-b + sqrt(discriminant)) / 2*a
+                if t > 1e-6:
+                    return t
+                
         return None
     
     def normal_at(self, pos):

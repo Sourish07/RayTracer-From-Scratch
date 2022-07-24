@@ -22,21 +22,19 @@ class Glass(Material):
     
     def bounce(self, r, normal, hit_pos):
         outside = r.direction.dot(normal) < 0
-        refraction_ratio = self.idx_refraction if outside else 1 / self.idx_refraction
+        refraction_ratio = self.idx_refraction if not outside else 1 / self.idx_refraction
         
-        # cos_theta = min(-(r.direction).dot(normal), 1)
-        # sin_theta = sqrt(1 - cos_theta**2)
-        
-        # cannot_refract = refraction_ratio * sin_theta > 1
-        
-        # if cannot_refract:
-        #     return super().bounce(r, normal, hit_pos)
-        
-        refracted_ray = self.refract(r.direction, normal, refraction_ratio)
-        return Ray(r.origin, refracted_ray)
+        refracted_ray = self.refract(r.direction, normal if outside else -normal, refraction_ratio)
+        return Ray(hit_pos, refracted_ray)
     
     def refract(self, direction, normal, refraction_ratio):
-        cos_theta = min(-direction.dot(normal), 1)
-        r_out_perp = refraction_ratio * (direction + cos_theta*normal)
-        r_out_parallel = -sqrt(abs(1 - r_out_perp.length() ** 2)) * normal
-        return r_out_perp + r_out_parallel
+        cos_theta = min((-direction).dot(normal), 1)
+        perp = refraction_ratio * (direction + cos_theta * normal)
+        parallel = -sqrt(abs(1 - perp.length()**2)) * normal
+        
+        return parallel + perp
+    
+    def reflectance(self, cos, reflectance_ratio):
+        r0 = (1 - reflectance_ratio) / (1 + reflectance_ratio)
+        r0 = r0 **2
+        return r0 + (1 - r0) * pow((1 - cos), 5)

@@ -35,7 +35,9 @@ class Vector:
         return self * other
     
     def __neg__(self):
-        return self * -1
+        return Vector(self.x * -1 if not self.x == 0 else 0,
+                      self.y * -1 if not self.y == 0 else 0,
+                      self.z * -1 if not self.z == 0 else 0,)
 
     def __imul__(self, other):
         if isinstance(other, Vector):    
