@@ -7,7 +7,7 @@ from scene import Scene
 
 from shapes.shapes import *
 from light import Light
-from material import Material
+from material import Material, Glass
 
 from random import random
 from utilities import print_progress_bar, write_color
@@ -49,26 +49,25 @@ def color_ray(r, scene, depth):
     normal = obj_hit.normal_at(hit_pos)
     hit_pos += normal * 0.001
 
-    for light in scene.lights:
-        light_ray = Ray(hit_pos, light.pos - hit_pos)
-        _, t = find_nearest_object(light_ray, scene.objects)
-        if not t:
-            # Direct path to light
-            # Lambert cosine law
-            color += obj_hit.material.color * \
-                max(normal.dot(light_ray.direction), 0)
+    if not isinstance(obj_hit.material, Glass):
+        for light in scene.lights:
+            light_ray = Ray(hit_pos, light.pos - hit_pos)
+            _, t = find_nearest_object(light_ray, scene.objects)
+            if not t:
+                # Direct path to light
+                # Lambert cosine law
+                color += obj_hit.material.color * light.color * light.intensity * max(normal.dot(light_ray.direction), 0)
 
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
-    assert(isinstance(bounce_ray, Ray))
-    return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
+    return color + color_ray(bounce_ray, scene, depth - 1)
 
 
 def render():
-    HEIGHT = 120
+    HEIGHT = 1080
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 50
+    MAX_DEPTH = 100
     NUM_SAMPLES = 100
 
     x0 = -1
@@ -83,11 +82,13 @@ def render():
     green = Material(Color(0, 1, 0))
     blue = Material(Color(0, 0, 1))
 
-    gold = Material(Color(0.8, 0.6, 0.2))
+    gold = Material(Color(0.8, 0.6, 0.2), roughness=0.5)
     silver = Material(Color(0.3, 0.3, 0.3))
-    bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
+    bronze = Material(Color(0.7, 0.3, 0.3))
 
     gray = Material(Color(0.5, 0.5, 0.5))
+    
+    glass = Glass()
     objects = [Sphere(Point(0, 0, -1), 0.5, gold),
                Cube(Point(-1.25, 0, -1.5), 0.5, silver),
                Cube(Point(1.35, 0, -2), 0.5, bronze),
@@ -99,8 +100,9 @@ def render():
     #            #Sphere(Point(0, -10000.5, 0), -10000, gray)]
     #            Plane(Point(y=-0.5), Vector(y=1), gray)]
 
-    # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
-    #            Cube(Point(1, 0, -2), 0.25, gold)]
+    objects2 = [Plane(Point(y=-0.5), Vector(y=1), gray),
+               Sphere(Point(0, 0, -1), 0.5, glass)]
+    
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
 
@@ -120,7 +122,7 @@ def render():
                     _v = v + (random() - 0.5) / (HEIGHT - 1)
                     r = Ray(camera, Point(_u, _v) - camera)
                     c += color_ray(r, scene, depth=MAX_DEPTH)
-                c = c / NUM_SAMPLES
+                c /= NUM_SAMPLES
                 write_color(f, c)
 
 

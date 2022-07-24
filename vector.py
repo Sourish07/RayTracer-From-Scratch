@@ -33,6 +33,9 @@ class Vector:
 
     def __rmul__(self, other):
         return self * other
+    
+    def __neg__(self):
+        return self * -1
 
     def __imul__(self, other):
         if isinstance(other, Vector):    
