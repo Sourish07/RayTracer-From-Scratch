@@ -56,19 +56,19 @@ def color_ray(r, scene, depth):
             if not t:
                 # Direct path to light
                 # Lambert cosine law
-                color += obj_hit.material.color * light.color * light.intensity * max(normal.dot(light_ray.direction), 0)
+                color += obj_hit.material.color * light.color * light.intensity * max(normal.dot(light_ray.direction), 0) 
 
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
-    return color + color_ray(bounce_ray, scene, depth - 1)
+    return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
 
 
 def render():
-    HEIGHT = 1080
+    HEIGHT = 240
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 100
-    NUM_SAMPLES = 100
+    MAX_DEPTH = 50
+    NUM_SAMPLES = 50
 
     x0 = -1
     x1 = 1
@@ -82,26 +82,18 @@ def render():
     green = Material(Color(0, 1, 0))
     blue = Material(Color(0, 0, 1))
 
-    gold = Material(Color(0.8, 0.6, 0.2), roughness=0.5)
+    gold = Material(Color(0.8, 0.6, 0.2))
     silver = Material(Color(0.3, 0.3, 0.3))
-    bronze = Material(Color(0.7, 0.3, 0.3))
+    bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
 
     gray = Material(Color(0.5, 0.5, 0.5))
-    
-    glass = Glass()
     objects = [Sphere(Point(0, 0, -1), 0.5, gold),
                Cube(Point(-1.25, 0, -1.5), 0.5, silver),
                Cube(Point(1.35, 0, -2), 0.5, bronze),
                Plane(Point(y=-0.5), Vector(y=1), gray)]
 
-    # objects = [Sphere(Point(0, 0, -1), 0.5, gold),
-    #            Sphere(Point(-1.25, 0, -1.5), 0.5, silver),
-    #            Sphere(Point(1.35, 0, -2), 0.5, bronze),
-    #            #Sphere(Point(0, -10000.5, 0), -10000, gray)]
-    #            Plane(Point(y=-0.5), Vector(y=1), gray)]
-
-    objects2 = [Plane(Point(y=-0.5), Vector(y=1), gray),
-               Sphere(Point(0, 0, -1), 0.5, glass)]
+    # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
+    #            Sphere(Point(0, 0, -2), 0.25, glass)]
     
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
