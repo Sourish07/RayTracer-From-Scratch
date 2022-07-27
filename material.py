@@ -26,7 +26,7 @@ class Glass(Material):
         outside = r.direction.dot(normal) < 0
         refraction_ratio = self.idx_refraction if not outside else 1 / self.idx_refraction
         
-        refracted_ray = self.refract(r.direction, normal if outside else -normal, refraction_ratio)
+        refracted_ray = self.refract(r.direction, normal if outside else -1 * normal, refraction_ratio)
         return Ray(hit_pos, refracted_ray)
     
     def refract(self, direction, normal, refraction_ratio):

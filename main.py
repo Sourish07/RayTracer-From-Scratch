@@ -12,10 +12,12 @@ from random import random
 from utilities import print_progress_bar, write_color
 
 
-def find_nearest_object(r, objects):
+def find_nearest_object(r, objects, ignore_glass=False):
     distance = None
     obj = None
     for o in objects:
+        if ignore_glass and isinstance(o.material, Glass):
+            continue
         t = o.hit(r)
         if t is None:
             continue
@@ -27,19 +29,21 @@ def find_nearest_object(r, objects):
 
 def color_ray(r, scene, depth):
     color = Color(0, 0, 0)
-    if depth == 0:
+    if depth == 0:#
         return color
 
     obj_hit, t = find_nearest_object(r, scene.objects)
+    if obj_hit is not None and isinstance(obj_hit.material, Glass):
+        x = 10
     if t is None:
         return color
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
-    hit_pos += normal * 0.001
+    #hit_pos += normal * 0.001
 
     for light in scene.lights:
         light_ray = Ray(hit_pos, light.pos - hit_pos)
-        _, t = find_nearest_object(light_ray, scene.objects)
+        _, t = find_nearest_object(light_ray, scene.objects, ignore_glass=True)
         if not t:
             # Direct path to light
             # Lambert cosine law
@@ -48,6 +52,8 @@ def color_ray(r, scene, depth):
 
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
     assert(isinstance(bounce_ray, Ray))
+    if isinstance(obj_hit.material, Glass):
+        return color_ray(bounce_ray, scene, depth - 1)
     return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
 
 
@@ -57,7 +63,7 @@ def render():
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
     MAX_DEPTH = 10
-    NUM_SAMPLES = 20
+    NUM_SAMPLES = 2
 
     x0 = -1
     x1 = 1
@@ -91,6 +97,11 @@ def render():
     #            Cube(Point(1, 0, -2), 0.25, gold)]
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
+    
+    
+    s = Sphere(Point(0, 0, 0), 1, Glass())
+    r = Ray(Point(0, 0, 2), Vector(0, 0, -1))
+    color_ray(r, Scene([s], [], camera), depth=3)
 
     scene = Scene(objects, lights, camera)
 
