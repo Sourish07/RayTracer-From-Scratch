@@ -5,15 +5,16 @@ from point import Point
 from ray import Ray
 from scene import Scene
 
-from shapes.shapes import *
+from shapes import *
 from light import Light
 from material import Material, Glass
 
 from random import random
 from utilities import print_progress_bar, write_color
+import math
 
 
-def find_nearest_object(r, objects):
+def find_nearest_object(r, objects, ignore_glass=False):
     """Iterates through all objects in a scene and calculates the closest object the ray has hit
 
     Args:
@@ -26,45 +27,52 @@ def find_nearest_object(r, objects):
     distance = None
     obj = None
     for o in objects:
+        if ignore_glass and isinstance(o.material, Glass):
+            continue
         t = o.hit(r)
         if t is None:
             continue
         if distance is None or t < distance:
             distance = t
             obj = o
-    #print("HITPOS, ", r(distance) if distance is not None else "inf");
     return obj, distance
 
 
 def color_ray(r, scene, depth):
-    color = Color(0, 0, 0)
     if depth == 0:
-        return color
+        return Color(0, 0, 0)
 
     obj_hit, t = find_nearest_object(r, scene.objects)
+    if isinstance(obj_hit, Sphere):
+        x = 10
+    
     if t is None:
-        _y = (r.direction.normalize().y + 1) * 0.5
-        return (1.0 - _y) * Color(1.0, 1.0, 1.0) + _y * Color(0.5, 0.7, 1.0)
-        return color
+        if False:
+            _y = (r.direction.normalize().y + 1) * 0.5
+            return (1.0 - _y) * Color(1.0, 1.0, 1.0) + _y * Color(0.5, 0.7, 1.0)
+        return Color(0, 0, 0) # Background color
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
     #hit_pos += normal * 0.001
-
-    if False and not isinstance(obj_hit.material, Glass):
+    direct_lighting = 0
+    if not isinstance(obj_hit.material, Glass):
+        hit_pos += normal * 1e-6
         for light in scene.lights:
             light_ray = Ray(hit_pos, light.pos - hit_pos)
-            _, t = find_nearest_object(light_ray, scene.objects)
+            _, t = find_nearest_object(light_ray, scene.objects, ignore_glass=True)
             if not t:
                 # Direct path to light
                 # Lambert cosine law
-                color += obj_hit.material.color * light.color * light.intensity * max(normal.dot(light_ray.direction), 0) 
+                direct_lighting += light.color * light.intensity * max(normal.dot(light_ray.direction), 0)
     else:
-        #pass
-        color += obj_hit.material.color
+        hit_pos += normal * -(1e-6)
+        
+    color = obj_hit.material.color # albedo
     bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
     
-    #return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
-    return color * color_ray(bounce_ray, scene, depth - 1)
+    indirect_lighting = color_ray(bounce_ray, scene, depth - 1)
+    return color * direct_lighting + indirect_lighting * 0.25
+    return ((direct_lighting / math.pi) + (2 * indirect_lighting)) * color
 
 
 def render():
@@ -72,8 +80,8 @@ def render():
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 50
-    NUM_SAMPLES = 25
+    MAX_DEPTH = 3
+    NUM_SAMPLES = 20
 
     x0 = -1
     x1 = 1
@@ -93,18 +101,19 @@ def render():
 
     gray = Material(Color(0.5, 0.5, 0.5))
     
-    glass = Glass()
-    # objects = [Sphere(Point(0, 0, -1), 0.5, gold),
-    #            Cube(Point(-1.25, 0, -1.5), 0.5, silver),
-    #            Cube(Point(1.35, 0, -2), 0.5, bronze),
-    #            Plane(Point(y=-0.5), Vector(y=1), gray)]
+    glass = Glass(idx_refraction=2)
+    objects = [Sphere(Point(0, 0, -1), 0.5, glass),
+               Cube(Point(-1.25, 0, -1.5), 0.5, silver),
+               Cube(Point(1.35, 0, -2), 0.5, bronze),
+               Plane(Point(y=-0.5), Vector(y=1), gray)]
 
     # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
     #            Sphere(Point(0, 0, -1), 0.5, glass),]
                #Sphere(Point(0, 0, -2), 0.5, gold)]
                
-    objects = [Sphere(Point( 0.0, -100.5, -1.0), 100, gray),
-               Sphere(Point(0, 0, -1), 0.5, glass)]
+    # objects = [Sphere(Point( 0.0, -100.5, -1.0), 100, gray),
+    #            Sphere(Point(0, 0, -1), 0.5, glass),
+    #            Sphere(Point(0, 0, -2.5), 0.5, gold)]
     
     lights = [Light(Point(x=1, y=1, z=1)),
               Light(Point(x=-1, y=5, z=5))]
@@ -126,8 +135,8 @@ def render():
                 c = Color()
                 u = x0 + x_step * i
                 for _ in range(NUM_SAMPLES):
-                    _u = u + (random() - 0.5) / (WIDTH - 1)
-                    _v = v + (random() - 0.5) / (HEIGHT - 1)
+                    _u = u + (random() - 0.5) * 2 / (WIDTH - 1)
+                    _v = v + (random() - 0.5) * 2 / (HEIGHT - 1)
                     r = Ray(camera, Point(_u, _v) - camera)
                     c += color_ray(r, scene, depth=MAX_DEPTH)
                 c /= NUM_SAMPLES
