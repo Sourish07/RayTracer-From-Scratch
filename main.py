@@ -7,7 +7,7 @@ from vector import Vector
 from light import Light
 from plane import Plane
 from cube import Cube
-from material import Material
+from material import Material, Glass
 from random import random
 from utilities import print_progress_bar, write_color
 
@@ -56,8 +56,8 @@ def render():
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 50
-    NUM_SAMPLES = 100
+    MAX_DEPTH = 10
+    NUM_SAMPLES = 20
 
     x0 = -1
     x1 = 1
@@ -76,7 +76,7 @@ def render():
     bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
 
     gray = Material(Color(0.5, 0.5, 0.5))
-    objects = [Sphere(Point(0, 0, -1), 0.5, gold),
+    objects = [Sphere(Point(0, 0, -1), 0.5, Glass()),
                Cube(Point(-1.25, 0, -1.5), 0.5, silver),
                Cube(Point(1.35, 0, -2), 0.5, bronze),
                Plane(Point(y=-0.5), Vector(y=1), gray)]
