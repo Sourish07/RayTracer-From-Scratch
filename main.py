@@ -7,7 +7,7 @@ from vector import Vector
 from light import Light
 from plane import Plane
 from cube import Cube
-from material import Material, Glass
+from material import Diffuse, Metal, Glass, Emissive
 from random import random
 from utilities import print_progress_bar, write_color
 
@@ -29,7 +29,7 @@ def find_nearest_object(r, objects, ignore_glass=False):
 
 def color_ray(r, scene, depth):
     color = Color(0, 0, 0)
-    if depth == 0:#
+    if depth == 0:
         return color
 
     obj_hit, t = find_nearest_object(r, scene.objects)
@@ -39,22 +39,13 @@ def color_ray(r, scene, depth):
         return color
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
-    #hit_pos += normal * 0.001
-
-    for light in scene.lights:
-        light_ray = Ray(hit_pos, light.pos - hit_pos)
-        _, t = find_nearest_object(light_ray, scene.objects, ignore_glass=True)
-        if not t:
-            # Direct path to light
-            # Lambert cosine law
-            color += obj_hit.material.color * \
-                max(normal.dot(light_ray.direction), 0)
-
-    bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
-    assert(isinstance(bounce_ray, Ray))
-    if isinstance(obj_hit.material, Glass):
-        return color_ray(bounce_ray, scene, depth - 1)
-    return color + color_ray(bounce_ray, scene, depth - 1) * 0.25
+    color = obj_hit.material.color
+    if isinstance(obj_hit.material, Emissive):
+        return obj_hit.material.color
+    else:
+        bounce_ray = obj_hit.material.bounce(r, normal, hit_pos)
+    
+    return color * color_ray(bounce_ray, scene, depth - 1)
 
 
 def render():
@@ -62,8 +53,8 @@ def render():
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 10
-    NUM_SAMPLES = 2
+    MAX_DEPTH = 50
+    NUM_SAMPLES = 250
 
     x0 = -1
     x1 = 1
@@ -73,18 +64,18 @@ def render():
     y_step = (y1 - y0) / (HEIGHT - 1)
 
     camera = Point(x=0, y=0, z=1)
-    red = Material(Color(1, 0, 0))
-    green = Material(Color(0, 1, 0))
-    blue = Material(Color(0, 0, 1))
+    red = Diffuse(Color(1, 0, 0))
+    green = Diffuse(Color(0, 1, 0))
+    blue = Diffuse(Color(0, 0, 1))
 
-    gold = Material(Color(0.8, 0.6, 0.2))
-    silver = Material(Color(0.3, 0.3, 0.3))
-    bronze = Material(Color(0.7, 0.3, 0.3), roughness=1)
+    gold = Diffuse(Color(0.8, 0.6, 0.2))
+    silver = Diffuse(Color(0.3, 0.3, 0.3))
+    bronze = Metal(Color(0.7, 0.3, 0.3), roughness=1)
 
-    gray = Material(Color(0.5, 0.5, 0.5))
+    gray = Diffuse(Color(0.5, 0.5, 0.5))
     objects = [Sphere(Point(0, 0, -1), 0.5, Glass()),
-               Cube(Point(-1.25, 0, -1.5), 0.5, silver),
-               Cube(Point(1.35, 0, -2), 0.5, bronze),
+               #Cube(Point(-1.25, 0, -1.5), 0.5, silver),
+               #Cube(Point(1.35, 0, -2), 0.5, bronze),
                Plane(Point(y=-0.5), Vector(y=1), gray)]
 
     # objects = [Sphere(Point(0, 0, -1), 0.5, gold),
@@ -95,13 +86,10 @@ def render():
 
     # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
     #            Cube(Point(1, 0, -2), 0.25, gold)]
-    lights = [Light(Point(x=1, y=1, z=1)),
-              Light(Point(x=-1, y=5, z=5))]
-    
-    
-    s = Sphere(Point(0, 0, 0), 1, Glass())
-    r = Ray(Point(0, 0, 2), Vector(0, 0, -1))
-    color_ray(r, Scene([s], [], camera), depth=3)
+    lights = []
+    # lights = [Light(Point(x=1, y=1, z=1)),
+    #           Light(Point(x=-1, y=5, z=5))]
+    objects.append(Sphere(Point(1, 2, -1.5), 1, Emissive()))
 
     scene = Scene(objects, lights, camera)
 

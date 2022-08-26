@@ -28,8 +28,9 @@ class Vector:
         return self
 
     def __mul__(self, other):
-        assert(isinstance(other, float) or isinstance(other, int))
-        return Vector(self.x * other, self.y * other, self.z * other)
+        if isinstance(other, float) or isinstance(other, int):
+            return Vector(self.x * other, self.y * other, self.z * other)
+        return Vector(self.x * other.x, self.y * other.y, self.z * other.z)
 
     def __rmul__(self, other):
         return self * other
