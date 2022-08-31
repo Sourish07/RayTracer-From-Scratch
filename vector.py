@@ -36,17 +36,25 @@ class Vector:
         return self * other
 
     def __imul__(self, other):
-        assert(isinstance(other, float))
-        self.x *= other.x
-        self.y *= other.y
-        self.z *= other.z
+        if isinstance(other, int) or isinstance(other, float):
+            self.x *= other
+            self.y *= other
+            self.z *= other
+        else:
+            self.x *= other.x
+            self.y *= other.y
+            self.z *= other.z
         return self
 
     def __itruediv__(self, other):
-        assert(isinstance(other, float))
-        self.x /= other.x
-        self.y /= other.y
-        self.z /= other.z
+        if isinstance(other, int) or isinstance(other, float):
+            self.x /= other
+            self.y /= other
+            self.z /= other
+        else:
+            self.x /= other.x
+            self.y /= other.y
+            self.z /= other.z
         return self
 
     def __truediv__(self, other):

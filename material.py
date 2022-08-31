@@ -9,6 +9,8 @@ from color import Color
 class Material(ABC):
     def __init__(self, color):
         self.color = color
+        if self.color.x > 1:
+            self.color /= 255
         
     def color(self):
         return self.color
@@ -63,8 +65,9 @@ class Glass(Material):
         #     return r0 + (1 - r0) * pow((1 - cos), 5)
     
 class Emissive(Material):
-    def __init__(self, color=Color(1, 1, 1)):
+    def __init__(self, color=Color(1, 1, 1), intensity=4):
         super().__init__(color)
+        self.color *= intensity
         
     def bounce(self, r, normal, hit_pos):
         return False
