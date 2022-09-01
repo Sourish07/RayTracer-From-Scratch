@@ -18,11 +18,15 @@ class Material(ABC):
     @abstractmethod
     def bounce(self, r, normal, hit_pos):
         raise NotImplementedError
+    
+    def emitted(self):
+        return Color(0, 0, 0)
 
 
 class Diffuse(Material):
     def bounce(self, r, normal, hit_pos):
-        return Ray(hit_pos, Vector.random()) 
+        target = hit_pos + normal + Vector.random_in_unit_sphere()
+        return Ray(hit_pos, target - hit_pos) 
     
     
 class Metal(Material):
@@ -34,7 +38,7 @@ class Metal(Material):
         if random() > self.roughness:
             new_direction = r.direction - 2 * r.direction.dot(normal)*normal
             return Ray(hit_pos, new_direction)
-        return Ray(hit_pos, Vector.random())
+        return Ray(hit_pos, Vector.random_unit_vector())
 
 
 class Glass(Material):
@@ -65,9 +69,12 @@ class Glass(Material):
         #     return r0 + (1 - r0) * pow((1 - cos), 5)
     
 class Emissive(Material):
-    def __init__(self, color=Color(1, 1, 1), intensity=4):
+    def __init__(self, color=Color(1, 1, 1), intensity=2):
         super().__init__(color)
         self.color *= intensity
         
     def bounce(self, r, normal, hit_pos):
-        return False
+        return None
+    
+    def emitted(self):
+        return self.color

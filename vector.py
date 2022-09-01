@@ -1,6 +1,6 @@
 import math
 from random import random
-
+from utilities import random_double
 
 class Vector:
     def __init__(self, x=0, y=0, z=0):
@@ -64,7 +64,10 @@ class Vector:
         return Vector(self.x / other, self.y / other, self.z / other)
 
     def length(self):
-        return math.sqrt(self.x**2 + self.y**2 + self.z**2)
+        return math.sqrt(self.length_squared())
+    
+    def length_squared(self):
+        return self.x**2 + self.y**2 + self.z**2
 
     def normalize(self):
         return self / self.length()
@@ -75,12 +78,29 @@ class Vector:
     def __str__(self):
         return f"[{self.x}, {self.y}, {self.z}]"
 
+    
     @classmethod
     def random(cls):
+        x = random()
+        y = random()
+        z = random()
+        return cls(x, y, z)
+                    
+    @classmethod
+    def random(cls, min, max):
+        x = random_double(min, max)
+        y = random_double(min, max)
+        z = random_double(min, max)
+        return cls(x, y, z)
+    
+    @classmethod
+    def random_in_unit_sphere(cls):
         while True:
-            x = (random() - 0.5) * 2
-            y = (random() - 0.5) * 2
-            z = (random() - 0.5) * 2
-            v = cls(x, y, z)
-            if v.length() <= 1:
-                return v.normalize()
+            p = cls.random(-1, 1)
+            if p.length_squared() >= 1:
+                continue
+            return p
+        
+    @classmethod
+    def random_unit_vector(cls):
+        return cls.random_in_unit_sphere().normalize()
