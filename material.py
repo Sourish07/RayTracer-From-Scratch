@@ -63,10 +63,10 @@ class Glass(Material):
         return Ray(hit_pos, refracted_ray)
     
     
-        # def reflectance(self, cos, reflectance_ratio):
-        #     r0 = (1 - reflectance_ratio) / (1 + reflectance_ratio)
-        #     r0 = r0 **2
-        #     return r0 + (1 - r0) * pow((1 - cos), 5)
+    # def reflectance(self, cos, reflectance_ratio):
+    #     r0 = (1 - reflectance_ratio) / (1 + reflectance_ratio)
+    #     r0 = r0 **2
+    #     return r0 + (1 - r0) * pow((1 - cos), 5)
     
 class Emissive(Material):
     def __init__(self, color=Color(1, 1, 1), intensity=2):

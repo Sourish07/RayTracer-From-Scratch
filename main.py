@@ -79,7 +79,7 @@ def render():
     gray = Diffuse(Color(0.8, 0.8, 0.8))
     ground = Diffuse(Color(0.5, 0.5, 0.5))
 
-    num = 3
+    num = 4
     if num == 0:
         objects = [
             Sphere(Point(-2.5, 0, -2), 0.5, silver),
@@ -112,7 +112,17 @@ def render():
         material_ground = Diffuse(Color(0.8, 0.8, 0))
         material_center = Diffuse(Color(0.7, 0.3, 0.3))
         material_left = Metal(Color(0.8, 0.8, 0.8))
-        #material_left = Glass(1.5)
+        material_right = Metal(Color(0.8, 0.6, 0.2))
+        objects = [
+            Sphere(Point(0, -100.5, -0), 100, material_ground),
+            Sphere(Point(z=-0), 0.5, material_center),
+            Sphere(Point(x=-1, z=-0), 0.5, material_left),
+            Sphere(Point(x=1, z=-0), 0.5, material_right)
+        ]
+    elif num == 4:
+        material_ground = Diffuse(Color(0.8, 0.8, 0))
+        material_center = Diffuse(Color(0.1, 0.2, 0.5))
+        material_left = Glass()
         material_right = Metal(Color(0.8, 0.6, 0.2))
         objects = [
             Sphere(Point(0, -100.5, -0), 100, material_ground),
