@@ -25,7 +25,7 @@ class Material(ABC):
 
 class Diffuse(Material):
     def bounce(self, r, normal, hit_pos):
-        target = hit_pos + normal + Vector.random_in_unit_sphere()
+        target = hit_pos + normal + Vector.random_unit_vector()
         return Ray(hit_pos, target - hit_pos) 
     
     

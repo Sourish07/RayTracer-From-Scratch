@@ -18,10 +18,10 @@ class Sphere(Geometry):
         
         if discriminant > 0:
             t = (-b - sqrt(discriminant)) / 2*a
-            if t > 1e-6:
+            if t > 1e-3:
                 return t
             t = (-b + sqrt(discriminant)) / 2*a
-            if t > 1e-6:
+            if t > 1e-3:
                 return t
         return None
     

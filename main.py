@@ -145,7 +145,7 @@ def render():
 
     scene = Scene(objects, [], camera)
 
-    with open("output-sk5.ppm", "w") as f:
+    with open("output-sk6.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 
         for j in range(HEIGHT - 1, -1, -1):
