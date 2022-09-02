@@ -26,6 +26,9 @@ class Vector:
     def __isub__(self, other):
         self += (other * -1)
         return self
+    
+    def __neg__(self):
+        return -1 * self
 
     def __mul__(self, other):
         if isinstance(other, float) or isinstance(other, int):

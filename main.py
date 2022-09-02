@@ -51,7 +51,7 @@ def color_ray(r, scene, depth):
 
 
 def render():
-    HEIGHT = 225
+    HEIGHT = 100
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
