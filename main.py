@@ -1,20 +1,27 @@
-from ctypes import pointer
 from color import Color
 from point import Point
+
 from ray import Ray
 from scene import Scene
-from sphere import Sphere
-from vector import Vector
+
+from shapes import *
+from materials import *
 from light import Light
-from plane import Plane
-from rectangle import RectangleXY, RectangleXZ, RectangleYZ
-from cube import Cube
-from material import Diffuse, Metal, Glass, Emissive
 from random import random
 from utilities import print_progress_bar, write_color
+import math
 
 
 def find_nearest_object(r, objects):
+    """Iterates through all objects in a scene and calculates the closest object the ray has hit
+
+    Args:
+        r (Ray): The current ray being cast
+        objects (List[Shapes]): A list of all current objects in scene
+
+    Returns:
+        tuple(Object, float): Return tuples pair for object that is the closest, along with t-value for ray. If t-value is None, no objects were hit
+    """
     distance = None
     obj = None
     for o in objects:
@@ -28,11 +35,11 @@ def find_nearest_object(r, objects):
 
 
 def color_ray(r, scene, depth):
-    color = Color(0, 0, 0)
-    if depth <= 0:
-        return color
+    if depth == 0:
+        return Color(0, 0, 0)
 
     obj_hit, t = find_nearest_object(r, scene.objects)
+    
     if t is None:
         return Color()
         # unit_direction = r.direction.normalize()
@@ -52,12 +59,12 @@ def color_ray(r, scene, depth):
 
 
 def render():
-    HEIGHT = 720
+    HEIGHT = 240
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
     MAX_DEPTH = 50
-    NUM_SAMPLES = 10000
+    NUM_SAMPLES = 100
 
     x0 = -1
     x1 = -x0
@@ -162,7 +169,7 @@ def render():
 
     scene = Scene(objects, [], camera)
 
-    with open("output2.ppm", "w") as f:
+    with open("outputs/output3.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 
         for j in range(HEIGHT - 1, -1, -1):

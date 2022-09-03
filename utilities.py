@@ -13,5 +13,5 @@ def clamp(n, _min, _max):
 def write_color(f, color):
     f.write(f"{int(256 * clamp(sqrt(color.x), 0, 0.999))} {int(256 * clamp(sqrt(color.y), 0, 0.999))} {int(256 * clamp(sqrt(color.z), 0, 0.999))}\n")
 
-def random_double(min, max):
+def random_double_in_range(min, max):
     return min + (max - min) * random()

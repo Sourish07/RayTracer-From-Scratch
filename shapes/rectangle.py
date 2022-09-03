@@ -1,10 +1,7 @@
-from math import sqrt
-
-from geometry import Geometry
-from vector import Vector
+from shapes.shape import *
 
 
-class RectangleXY(Geometry):
+class RectangleXY(Shape):
     def __init__(self, x0, x1, y0, y1, z, material):
         self.x0 = x0
         self.x1 = x1
@@ -25,7 +22,7 @@ class RectangleXY(Geometry):
         return Vector(z=1)
     
     
-class RectangleXZ(Geometry):
+class RectangleXZ(Shape):
     def __init__(self, x0, x1, z0, z1, y, material):
         self.x0 = x0
         self.x1 = x1
@@ -46,7 +43,7 @@ class RectangleXZ(Geometry):
         return Vector(y=-1)
     
     
-class RectangleYZ(Geometry):
+class RectangleYZ(Shape):
     def __init__(self, y0, y1, z0, z1, x, material):
         self.y0 = y0
         self.y1 = y1
