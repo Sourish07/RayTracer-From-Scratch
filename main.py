@@ -34,9 +34,10 @@ def color_ray(r, scene, depth):
 
     obj_hit, t = find_nearest_object(r, scene.objects)
     if t is None:
-        unit_direction = r.direction.normalize()
-        t = 0.5 * (unit_direction.y + 1)
-        return (1.0 - t)*Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
+        return Color()
+        # unit_direction = r.direction.normalize()
+        # t = 0.5 * (unit_direction.y + 1)
+        # return (1.0 - t)*Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
 
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
@@ -51,15 +52,15 @@ def color_ray(r, scene, depth):
 
 
 def render():
-    HEIGHT = 100
+    HEIGHT = 720
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
     MAX_DEPTH = 50
-    NUM_SAMPLES = 100
+    NUM_SAMPLES = 10000
 
-    x0 = -1.7777778
-    x1 = 1.7777778
+    x0 = -1
+    x1 = -x0
     x_step = (x1 - x0) / (WIDTH - 1)
     y0 = x0 / ASPECT_RATIO
     y1 = x1 / ASPECT_RATIO
@@ -68,6 +69,7 @@ def render():
     camera = Point(x=0, y=0, z=1)
     red = Diffuse(Color(1, 0, 0))
     pink = Diffuse(Color(255, 87, 51))
+    lavender = Diffuse(Color(223, 150, 150))
     green = Diffuse(Color(0, 1, 0))
     blue = Diffuse(Color(0, 0, 1))
 
@@ -79,7 +81,7 @@ def render():
     gray = Diffuse(Color(0.8, 0.8, 0.8))
     ground = Diffuse(Color(0.5, 0.5, 0.5))
 
-    num = 4
+    num = 7
     if num == 0:
         objects = [
             Sphere(Point(-2.5, 0, -2), 0.5, silver),
@@ -91,11 +93,10 @@ def render():
     elif num == 1:
         objects = [
             Sphere(Point(-2.5, 0, -2), 0.5, silver),
-            #Sphere(Point(-0.5, 1, -1.5), 0.25, gold),
+            Sphere(Point(-0.5, 1, -1.5), 0.25, gold),
             Sphere(Point(1.5, 0.5, -1.5), 0.25, red),
             Sphere(Point(0, -1002, -1), 1000, ground),
-            Sphere(Point(0, 0.25, -2.5), 1, gold),
-            #Sphere(Point(0, 0.25, -3.5), 0.25, gold),
+            Sphere(Point(0, 0.1, -2.5), 1, glass),
             Sphere(Point(-1, 3.5, -2), 1.5, Emissive())
         ]
     elif num == 2:
@@ -130,22 +131,38 @@ def render():
             Sphere(Point(x=-1, z=-0), 0.5, material_left),
             Sphere(Point(x=1, z=-0), 0.5, material_right)
         ]
-    # objects = [Sphere(Point(0, 0, -1), 0.5, gold),
-    #            Sphere(Point(-1.25, 0, -1.5), 0.5, silver),
-    #            Sphere(Point(1.35, 0, -2), 0.5, bronze),
-    #            #Sphere(Point(0, -10000.5, 0), -10000, gray)]
-    #            Plane(Point(y=-0.5), Vector(y=1), gray)]
-
-    # objects = [Plane(Point(y=-0.5), Vector(y=1), gray),
-    #            Cube(Point(1, 0, -2), 0.25, gold)]
-    
-    # lights = [Light(Point(x=1, y=1, z=1)),
-    #           Light(Point(x=-1, y=5, z=5))]
-    #objects.append(Sphere(Point(-2.5, 2, -1), 2, Emissive()))
+    elif num == 5:
+        material_ground = Diffuse(Color(0.5, 0.5, 0.5))
+        material_gold = Metal(Color(0.8, 0.6, 0.2))
+        material_glass = Glass()
+        material_right = Emissive()
+        objects = []
+        objects.append(Sphere(Point(0, -100.5, -1), 100, material_ground))
+        objects.append(Sphere(Point(-0.5, 0, -0.5), 0.5, material_glass))
+        objects.append(Sphere(Point(0.75, 0, -0.5), 0.3, material_gold))
+        objects.append(Sphere(Point(1, 1, -1), 0.5, material_right))
+    elif num == 6:
+        # Blender scene
+        objects = [
+            Plane(Point(y=-0.5), Vector(y=1), lavender),
+            Sphere(Point(1.5, 6, -5), 1, Emissive(intensity=25)),
+            Sphere(Point(0.7, 0, -0.75), 0.5, Glass()),
+            Cube(Point(-0.7, 0, -0.75), 0.5, gold)
+        ]
+    elif num == 7:
+        material_ground = Diffuse(Color(0.5, 0.5, 0.5))
+        material_gold = Metal(Color(0.8, 0.6, 0.2))
+        material_glass = Glass()
+        material_right = Emissive(intensity=25)
+        objects = []
+        objects.append(Sphere(Point(0, -100.5, -2), 100, material_ground))
+        objects.append(Sphere(Point(-0.5, 0, -1.5), 0.5, material_glass))
+        objects.append(Sphere(Point(0.75, 0, -1.5), 0.3, material_gold))
+        objects.append(Sphere(Point(1, 3, -2), 0.5, material_right))
 
     scene = Scene(objects, [], camera)
 
-    with open("output-sk6.ppm", "w") as f:
+    with open("output2.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 
         for j in range(HEIGHT - 1, -1, -1):
