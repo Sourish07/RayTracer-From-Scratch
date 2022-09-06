@@ -1,9 +1,9 @@
 from math import sqrt
 
-from geometry import Geometry
+from shapes.shape import Shape
 
 
-class Sphere(Geometry):
+class Sphere(Shape):
     def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius
@@ -18,7 +18,10 @@ class Sphere(Geometry):
         
         if discriminant > 0:
             t = (-b - sqrt(discriminant)) / 2*a
-            if t > 0:
+            if t > 1e-3:
+                return t
+            t = (-b + sqrt(discriminant)) / 2*a
+            if t > 1e-3:
                 return t
         return None
     

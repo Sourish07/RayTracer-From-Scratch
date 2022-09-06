@@ -1,8 +1,7 @@
+from shapes.shape import Shape
 
-from geometry import Geometry
 
-
-class Plane(Geometry):
+class Plane(Shape):
     def __init__(self, point, normal, material):
         self.point = point
         self.normal = normal

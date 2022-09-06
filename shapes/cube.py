@@ -1,15 +1,14 @@
 from math import sqrt
-from geometry import Geometry
+from shapes.shape import Shape
 from vector import Vector
 
-class Cube(Geometry):
+class Cube(Shape):
     def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius
         self.material = material
         self.min = self.center - Vector(radius, radius, radius)
         self.max = self.center + Vector(radius, radius, radius)
-    
     
     def hit(self, r):
         t0 = (self.min - r.origin) / (r.direction)
@@ -19,12 +18,11 @@ class Cube(Geometry):
         t_max = min(max(t0.x, t1.x), max(t0.y, t1.y), max(t0.z, t1.z))
         
         if t_min <= t_max:
-            if t_min > 0:
+            if t_min > 1e-3:
                 return t_min
-            elif t_max > 0:
+            elif t_max > 1e-3:
                 return t_max
         return None
-        
     
     def normal_at(self, pos):
         pos -= self.center
