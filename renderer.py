@@ -56,29 +56,33 @@ def color_ray(r, scene, depth):
 
 
 def render():
-    HEIGHT = 720
+    
+    if False:
+    #if True:
+        HEIGHT = 720
+        MAX_DEPTH = 50
+        NUM_SAMPLES = 15000
+    else:
+        HEIGHT = 240
+        MAX_DEPTH = 25
+        NUM_SAMPLES = 100
+        
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    MAX_DEPTH = 50
-    NUM_SAMPLES = 15000
-
     scene = Scene(default_scene=8)
 
-    with open("outputs/output3.ppm", "w") as f:
+    with open("outputs/output4.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 
         for j in range(HEIGHT - 1, -1, -1):
             print_progress_bar((HEIGHT - j) / HEIGHT)
-            #v = y0 + y_step * j
             for i in range(WIDTH):
                 c = Color()
-                #u = x0 + x_step * i
                 for _ in range(NUM_SAMPLES):
                     u = (i + random()) / (WIDTH - 1)
                     v = (j + random()) / (HEIGHT - 1)
                     r = scene.camera.get_ray(u, v)
-                    #r = Ray(camera, Point(_u, _v) - camera)
                     c += color_ray(r, scene, depth=MAX_DEPTH)
                 c /= NUM_SAMPLES
                 write_color(f, c)
