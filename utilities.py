@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, pi
 from random import random
 
 def print_progress_bar(percentage):
@@ -15,3 +15,7 @@ def write_color(f, color):
 
 def random_double_in_range(min, max):
     return min + (max - min) * random()
+
+
+def degrees_to_radians(degrees):
+    return degrees * pi / 180
