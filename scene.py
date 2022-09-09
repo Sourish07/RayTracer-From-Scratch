@@ -41,54 +41,57 @@ class Scene:
         
         light = Emissive(intensity=25)
         
-        self.objects, self.background = {
-            0: ([
+        self.objects, self.background = [ 
+            ([
+                Plane(Point(y=-0.5), Vector(y=1), gray),
+                Sphere(Point(0, 0, -1), 0.5, red),
+                Sphere(Point(-1.5, 2, -1), 0.5, Emissive(intensity=10))
+            ], default_background), 
+            ([
                 Sphere(Point(-2.5, 0, -2), 0.5, silver),
                 Sphere(Point(-0.5, 1, -1.5), 0.25, gold),
                 Sphere(Point(1.5, 0.5, -1.5), 0.25, red),
                 Sphere(Point(0, -1002, -1), 1000, ground),
                 Sphere(Point(0, 0.1, -2.5), 1, glass),
                 Sphere(Point(-1, 3.5, -2), 1.5, light)
-            ], default_background),
-            1: ([
+            ], default_background), 
+            ([
                 Sphere(Point(0, 0, -3), 1, bronze),
-                Sphere(Point(0.75, 0, -5), 0.5, red),
-                RectangleXZ(-1, 1, -2, -3, 3, light),
                 Sphere(Point(0, 3, -2), 1, light),
-                Cube(Point(2, 0, -3), 0.5, silver),
+                Sphere(Point(2, 0, -3), 0.5, silver),
                 Sphere(Point(-1.5, 0, -1.5), 0.5, gold),
                 Plane(Point(y=-2), Vector(y=1), gray)
-            ], default_background),
-            2: ([
+            ], default_background), 
+            ([
                 Sphere(Point(0, -100.5, -1), 100, green_ground),
                 Sphere(Point(z=-1), 0.5, tan),
                 Sphere(Point(x=-1, z=-1), 0.5, silver),
                 Sphere(Point(x=1, z=-1), 0.5, gold)
-            ], gradient_background),
-            3: ([
-                Plane(Point(y=-0.5), Vector(y=1), lavender),
+            ], gradient_background), 
+            ([
+                Plane(Point(y=-0.5), Vector(y=1), Diffuse(Color(0.97, 0.94, 0.89))),
                 Sphere(Point(1.5, 6, -5), 1, light),
                 Sphere(Point(0.7, 0, -0.75), 0.5, glass),
                 Cube(Point(-0.7, 0, -0.75), 0.5, glass)
-            ], default_background),
-            4: ([
+            ], default_background), 
+            ([
                 Plane(Point(y=-0.5), Vector(y=1), Diffuse(Color(0.6, 0.5, 0.5))),
                 Sphere(Point(1.5, 6, -5), 1, light),
                 Sphere(Point(0.7, 0, -0.75), 0.25, glass),
                 Sphere(Point(-0.7, 0, -0.75), 0.5, glass),
                 Sphere(Point(0.2, 0, -2), 0.5, gold),
-            ], default_background),
-            5: ([
+            ], default_background), 
+            ([
                 Sphere(Point(0, -100.5, -2), 100, ground),
                 Sphere(Point(-0.5, 0, -1.5), 0.5, glass),
                 Sphere(Point(0.75, 0, -1.5), 0.3, gold),
                 Sphere(Point(1, 3, -2), 0.5, light)
-            ], default_background),
-            6: ([
+            ], default_background), 
+            ([
                 Sphere(Point(0, -100.5, -2), 100, ground),
                 Cube(Point(-0.5, 0, -1.5), 0.5, glass),
                 ####Cube(Point(-0, 0, -1), 0.5, glass),
                 Sphere(Point(0.75, 0, -1.5), 0.3, gold),
                 Sphere(Point(1, 3, -2), 0.5, light)
             ], default_background)
-        }[num]      
+        ][num]      

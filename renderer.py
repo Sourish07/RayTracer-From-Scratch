@@ -53,8 +53,8 @@ def color_ray(r, scene, depth):
 def render(scene, output='outputs/output', quality=3):
     
     HEIGHT = [100, 240, 360, 720, 2160][quality]
-    MAX_DEPTH = [25, 25, 50, 50, 100][quality]
-    NUM_SAMPLES = [100, 200, 500, 10000, 15000][quality]
+    MAX_DEPTH = [5, 25, 50, 50, 100][quality]
+    NUM_SAMPLES = [50, 200, 500, 10000, 15000][quality]
         
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
