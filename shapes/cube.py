@@ -25,7 +25,8 @@ class Cube(Shape):
         return None
     
     def normal_at(self, pos):
-        pos -= self.center
+        
+        pos = pos - self.center
         pos = pos.normalize()
         nums = [(pos.dot(Vector(x=1)), Vector(x=1)),
                 (pos.dot(Vector(y=1)), Vector(y=1)),

@@ -1,10 +1,7 @@
 from color import Color
-
 from scene import Scene
+from shapes import *
 
-
-
-#from light import Light
 from random import random
 from utilities import print_progress_bar, write_color
 
@@ -36,12 +33,10 @@ def color_ray(r, scene, depth):
         return Color(0, 0, 0)
 
     obj_hit, t = find_nearest_object(r, scene.objects)
-    
+    # if isinstance(obj_hit, Cube):
+    #     x = 10
     if t is None:
-        return Color()
-        # unit_direction = r.direction.normalize()
-        # t = 0.5 * (unit_direction.y + 1)
-        # return (1.0 - t)*Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
+        return scene.background(r.direction)
 
     hit_pos = r(t)
     normal = obj_hit.normal_at(hit_pos)
@@ -55,24 +50,16 @@ def color_ray(r, scene, depth):
     return emitted + color * color_ray(bounce_ray, scene, depth - 1)
 
 
-def render():
+def render(scene, output='outputs/output', quality=3):
     
-    if False:
-    #if True:
-        HEIGHT = 720
-        MAX_DEPTH = 50
-        NUM_SAMPLES = 15000
-    else:
-        HEIGHT = 240
-        MAX_DEPTH = 25
-        NUM_SAMPLES = 100
+    HEIGHT = [100, 240, 360, 720, 2160][quality]
+    MAX_DEPTH = [25, 25, 50, 50, 100][quality]
+    NUM_SAMPLES = [100, 200, 500, 10000, 15000][quality]
         
     ASPECT_RATIO = 16 / 9
     WIDTH = int(HEIGHT * ASPECT_RATIO)
 
-    scene = Scene(default_scene=8)
-
-    with open("outputs/output4.ppm", "w") as f:
+    with open(f"{output}.ppm", "w") as f:
         f.write(f"P3\n{WIDTH} {HEIGHT}\n255\n")
 
         for j in range(HEIGHT - 1, -1, -1):
