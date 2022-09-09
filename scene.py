@@ -22,7 +22,7 @@ class Scene:
         blue = Diffuse(Color(0, 0, 1))
 
         gold = Metal(Color(0.8, 0.6, 0.2))
-        silver = Metal(Color(0.8, 0.8, 0.8), roughness=0.3)
+        silver = Metal(Color(0.8, 0.8, 0.8))
         bronze = Metal(Color(0.7, 0.3, 0.3))
         glass = Glass()
 
@@ -56,10 +56,10 @@ class Scene:
                 Sphere(Point(-1, 3.5, -2), 1.5, light)
             ], default_background), 
             ([
-                Sphere(Point(0, 0, -3), 1, bronze),
+                Sphere(Point(0, 0, -3), 1, gold),
                 Sphere(Point(0, 3, -2), 1, light),
                 Sphere(Point(2, 0, -3), 0.5, silver),
-                Sphere(Point(-1.5, 0, -1.5), 0.5, gold),
+                Sphere(Point(-1.5, 0, -1.5), 0.5, bronze),
                 Plane(Point(y=-2), Vector(y=1), gray)
             ], default_background), 
             ([
