@@ -61,6 +61,14 @@ class Scene:
                 Sphere(Point(2, 0, -3), 0.5, silver),
                 Sphere(Point(-1.5, 0, -1.5), 0.5, bronze),
                 Plane(Point(y=-2), Vector(y=1), gray)
+            ], default_background),
+            ([
+                Cube(Point(1.5, 0, -1.5), 0.5, gold),
+                Sphere(Point(-3, 5.5, 2), 1, Emissive(intensity=20)),
+                Cube(Point(0, 0, -10), 2, silver),
+                Cube(Point(-4, 0, -7), 1.5, bronze),
+                Plane(Point(y=-2), Vector(y=1), gray),
+                Plane(Point(z=-15), Vector(z=1), gray)
             ], default_background), 
             ([
                 Sphere(Point(0, -100.5, -1), 100, green_ground),
@@ -93,5 +101,16 @@ class Scene:
                 ####Cube(Point(-0, 0, -1), 0.5, glass),
                 Sphere(Point(0.75, 0, -1.5), 0.3, gold),
                 Sphere(Point(1, 3, -2), 0.5, light)
+            ], default_background),
+            ([
+                Plane(Point(z=-3), Vector(z=1), ground),
+                Plane(Point(x=-1), Vector(x=1), red),
+                Plane(Point(x=1), Vector(x=-1), blue),
+                Plane(Point(y=-1), Vector(y=1), ground),
+                Plane(Point(y=1), Vector(y=-1), ground),
+                RectangleXZ(-0.25, 0.25, -1.75, -1.25, 0.99, Emissive()),
+                Sphere(Point(-0.25, -0.75, -1), 0.25, silver),
+                Sphere(Point(0.5, -0.5, -2), 0.25, Diffuse(Color(1, 1, 1))),
+                Sphere(Point(-0.5, 0, -1.5), 0.25, Glass()),
             ], default_background)
         ][num]      
