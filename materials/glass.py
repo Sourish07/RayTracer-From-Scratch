@@ -25,7 +25,7 @@ class Glass(Material):
 
     @staticmethod
     def refract(direction, normal, refraction_ratio):
-        cos_theta = min((-1 * direction).dot(normal), 1)
+        cos_theta = min(-direction.dot(normal), 1)
         perp = refraction_ratio * (direction + cos_theta * normal)
         parallel = -sqrt(abs(1 - perp.length()**2)) * normal
 

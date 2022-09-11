@@ -95,6 +95,10 @@ class Vector:
 
     def dot(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
+    
+    def near_zero(self):
+        s = 1e-6
+        return abs(self.x) < s and abs(self.y) < s and abs(self.z) < s
 
     def __str__(self):
         return f"[{self.x}, {self.y}, {self.z}]"
