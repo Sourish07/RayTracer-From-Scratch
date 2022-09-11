@@ -22,8 +22,14 @@ class Scene:
         blue = Diffuse(Color(0, 0, 1))
 
         gold = Metal(Color(0.8, 0.6, 0.2))
+        gold_fuzzed = Metal(Color(0.8, 0.6, 0.2), fuzz=0.15)
+        
         silver = Metal(Color(0.8, 0.8, 0.8))
+        silver_fuzzed = Metal(Color(0.8, 0.8, 0.8), fuzz=0.15)
+        
         bronze = Metal(Color(0.7, 0.3, 0.3))
+        bronze_fuzzed = Metal(Color(0.7, 0.3, 0.3), fuzz=0.15)
+        
         glass = Glass()
 
         gray = Diffuse(Color(0.8, 0.8, 0.8))
@@ -63,13 +69,12 @@ class Scene:
                 Plane(Point(y=-2), Vector(y=1), gray)
             ], default_background),
             ([
-                Cube(Point(1.5, 0, -1.5), 0.5, gold),
+                Cube(Point(0, 0, -2), 0.5, gold_fuzzed),
                 Sphere(Point(-3, 5.5, 2), 1, Emissive(intensity=20)),
-                Cube(Point(0, 0, -10), 2, silver),
-                Cube(Point(-4, 0, -7), 1.5, bronze),
-                Plane(Point(y=-2), Vector(y=1), gray),
-                Plane(Point(z=-15), Vector(z=1), gray)
-            ], default_background), 
+                Cube(Point(1.5, 0, -2), 0.5, bronze_fuzzed),
+                Cube(Point(-1.5, 0, -2), 0.5, silver_fuzzed),
+                Plane(Point(y=-0.5), Vector(y=1), gray),
+            ], lambda x: Color(0.1, 0.1, 0.1)), 
             ([
                 Sphere(Point(0, -100.5, -1), 100, green_ground),
                 Sphere(Point(z=-1), 0.5, tan),
@@ -98,7 +103,6 @@ class Scene:
             ([
                 Sphere(Point(0, -100.5, -2), 100, ground),
                 Cube(Point(-0.5, 0, -1.5), 0.5, glass),
-                ####Cube(Point(-0, 0, -1), 0.5, glass),
                 Sphere(Point(0.75, 0, -1.5), 0.3, gold),
                 Sphere(Point(1, 3, -2), 0.5, light)
             ], default_background),
