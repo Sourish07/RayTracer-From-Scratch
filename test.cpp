@@ -1,11 +1,22 @@
-#include <iostream>
+#include "materials/diffuse.h"
+#include "renderer.h"
+#include "shapes/sphere.h"
 #include "vector.h"
+#include <iostream>
+#include <memory>
 
 int main() {
-    Vector v1(1, 2, 3);
-    Vector v2(4, 5, 6);
-    Vector v3 = v1 + v2;
-    std::cout << "v1: " << v1 << std::endl;
-    std::cout << "v2: " << v2 << std::endl;
-    std::cout << "v3: " << v3 << std::endl;
+    auto redMat = std::make_shared<Diffuse>(Vector(1, 0, 0));
+    auto sphere = std::make_shared<Sphere>(Vector(0, 0, -2), 0.5, redMat);
+
+    auto groundMat = std::make_shared<Diffuse>(Vector(0.5, 1, 0.5));
+    auto floorSphere = std::make_shared<Sphere>(Vector(0, -100.5, -1), 100, groundMat);
+
+    Camera c(Vector(0, 0, 0), 1.7777777, 90, 1);
+    Renderer r = Renderer(540, 25, 10, Vector(0.5, 0.7, 1.0), 1.7777777);
+    r.addShape(sphere);
+    r.addShape(floorSphere);
+    r.render(c);
+
+    return 0;
 }

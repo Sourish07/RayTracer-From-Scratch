@@ -66,9 +66,9 @@ Vector &Vector::operator/=(double scalar) {
     return *this;
 }
 
-double Vector::length() const { return std::sqrt(length_squared()); }
+double Vector::length() const { return std::sqrt(lengthSquared()); }
 
-double Vector::length_squared() const { return x * x + y * y + z * z; }
+double Vector::lengthSquared() const { return x * x + y * y + z * z; }
 
 Vector Vector::normalize() const { return *this / length(); }
 
@@ -76,12 +76,12 @@ double Vector::dot(const Vector &other) const {
     return x * other.x + y * other.y + z * other.z;
 }
 
-bool Vector::near_zero() const {
+bool Vector::nearZero() const {
     const double s = 1e-6;
     return std::abs(x) < s && std::abs(y) < s && std::abs(z) < s;
 }
 
-std::ostream &operator<<(std::ostream &os, const Vector &v) {
+std::ostream& operator<<(std::ostream &os, const Vector &v) {
     os << "[" << v.x << ", " << v.y << ", " << v.z << "]";
     return os;
 }
@@ -100,16 +100,16 @@ Vector Vector::random(double min, double max) {
     return Vector(dist(gen), dist(gen), dist(gen));
 }
 
-Vector Vector::random_in_unit_sphere() {
+Vector Vector::randomInUnitSphere() {
     while (true) {
         Vector p = random(-1, 1);
-        if (p.length_squared() >= 1) {
+        if (p.lengthSquared() >= 1) {
             continue;
         }
         return p;
     }
 }
 
-Vector Vector::random_unit_vector() {
-    return random_in_unit_sphere().normalize();
+Vector Vector::randomUnitVector() {
+    return randomInUnitSphere().normalize();
 }

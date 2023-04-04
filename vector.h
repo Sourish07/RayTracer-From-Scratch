@@ -24,20 +24,21 @@ public:
     Vector &operator/=(double scalar);
 
     double length() const;
-    double length_squared() const;
+    double lengthSquared() const;
     Vector normalize() const;
     double dot(const Vector &other) const;
-    bool near_zero() const;
+    bool nearZero() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Vector &v);
 
     static Vector random();
     static Vector random(double min, double max);
-    static Vector random_in_unit_sphere();
-    static Vector random_unit_vector();
+    static Vector randomInUnitSphere();
+    static Vector randomUnitVector();
 
-private:
+public:
     double x, y, z;
 };
+
+std::ostream& operator<<(std::ostream& os, const Vector& v);
 
 #endif
