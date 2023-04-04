@@ -12,8 +12,8 @@ int main() {
     auto groundMat = std::make_shared<Diffuse>(Vector(0.5, 1, 0.5));
     auto floorSphere = std::make_shared<Sphere>(Vector(0, -100.5, -1), 100, groundMat);
 
-    Camera c(Vector(0, 0, 0), 1.7777777, 90, 1);
-    Renderer r = Renderer(540, 25, 10, Vector(0.5, 0.7, 1.0), 1.7777777);
+    Camera c(Vector(0, 0, 0), 16./9, 90, 1);
+    Renderer r = Renderer(720, 25, 10, Vector(0.5, 0.7, 1.0), 16./9);
     r.addShape(sphere);
     r.addShape(floorSphere);
     r.render(c);

@@ -7,8 +7,8 @@ Camera::Camera(const Vector &origin, double aspectRatio, int fov,
     double theta = fov * M_PI / 180;
     double halfHeight = tan(theta / 2);
     double halfWidth = aspectRatio * halfHeight;
-    viewportHeight = halfHeight;
-    viewportWidth = halfWidth;
+    viewportHeight = 2 * halfHeight;
+    viewportWidth = 2 * halfWidth;
     horizontal = Vector(viewportWidth, 0, 0);
     vertical = Vector(0, viewportHeight, 0);
     lowerLeftCorner =

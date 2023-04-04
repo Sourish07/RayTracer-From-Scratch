@@ -81,23 +81,21 @@ bool Vector::nearZero() const {
     return std::abs(x) < s && std::abs(y) < s && std::abs(z) < s;
 }
 
-std::ostream& operator<<(std::ostream &os, const Vector &v) {
+std::ostream &operator<<(std::ostream &os, const Vector &v) {
     os << "[" << v.x << ", " << v.y << ", " << v.z << "]";
     return os;
 }
 
 Vector Vector::random() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(0, 1);
+    std::mt19937 gen;
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
     return Vector(dist(gen), dist(gen), dist(gen));
 }
 
 Vector Vector::random(double min, double max) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(min, max);
-    return Vector(dist(gen), dist(gen), dist(gen));
+    static std::uniform_real_distribution<double> distribution(min, max);
+    static std::mt19937 generator;
+    return Vector( distribution(generator),  distribution(generator),  distribution(generator));
 }
 
 Vector Vector::randomInUnitSphere() {
@@ -110,6 +108,4 @@ Vector Vector::randomInUnitSphere() {
     }
 }
 
-Vector Vector::randomUnitVector() {
-    return randomInUnitSphere().normalize();
-}
+Vector Vector::randomUnitVector() { return randomInUnitSphere().normalize(); }
