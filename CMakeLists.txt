@@ -15,13 +15,15 @@ set(pybind11_DIR ${PYBIND11_DIR})
 
 find_package(pybind11 REQUIRED)
 pybind11_add_module(raytracer 
-                    raytracer.cpp 
+                    raytracer.cc 
                     renderer.cpp 
                     shapes/sphere.cpp 
                     vector.cpp 
                     camera.cpp 
                     ray.cpp
                     materials/diffuse.cpp
-                    materials/material.cpp)
+                    materials/material.cpp
+                    materials/emissive.cpp
+                    )
 
 include_directories(${pybind11_INCLUDE_DIRS})

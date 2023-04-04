@@ -6,6 +6,7 @@
 
 #include "materials/material.h"
 #include "materials/diffuse.h"
+#include "materials/emissive.h"
 
 #include "shapes/shape.h"
 #include "shapes/sphere.h"
@@ -71,4 +72,12 @@ PYBIND11_MODULE(raytracer, m) {
                             color_list[2].cast<float>()));
              }),
              py::arg("color"));
+
+    py::class_<Emissive, std::shared_ptr<Emissive>, Material>(materialsModule, "Emissive")
+        .def(py::init([](const py::list color_list, double intensity) {
+                 return std::make_unique<Emissive>(
+                     Vector(color_list[0].cast<float>(), color_list[1].cast<float>(),
+                            color_list[2].cast<float>()), intensity);
+             }),
+             py::arg("color"), py::arg("intensity"));
 }
