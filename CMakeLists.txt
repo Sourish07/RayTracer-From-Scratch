@@ -24,6 +24,7 @@ pybind11_add_module(raytracer
                     materials/diffuse.cpp
                     materials/material.cpp
                     materials/emissive.cpp
+                    materials/glass.cpp
                     )
 
 include_directories(${pybind11_INCLUDE_DIRS})

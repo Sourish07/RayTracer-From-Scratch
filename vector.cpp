@@ -109,3 +109,5 @@ Vector Vector::randomInUnitSphere() {
 }
 
 Vector Vector::randomUnitVector() { return randomInUnitSphere().normalize(); }
+
+Vector operator*(double scalar, const Vector &v) { return v * scalar; }

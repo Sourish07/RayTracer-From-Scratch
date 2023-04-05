@@ -40,5 +40,6 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);
+Vector operator*(double scalar, const Vector& v);
 
 #endif

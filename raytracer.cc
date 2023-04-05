@@ -7,6 +7,7 @@
 #include "materials/material.h"
 #include "materials/diffuse.h"
 #include "materials/emissive.h"
+#include "materials/glass.h"
 
 #include "shapes/shape.h"
 #include "shapes/sphere.h"
@@ -80,4 +81,12 @@ PYBIND11_MODULE(raytracer, m) {
                             color_list[2].cast<float>()), intensity);
              }),
              py::arg("color"), py::arg("intensity"));
+
+    py::class_<Glass, std::shared_ptr<Glass>, Material>(materialsModule, "Glass")
+        .def(py::init([](const py::list color_list, double ior) {
+                 return std::make_unique<Glass>(
+                     Vector(color_list[0].cast<float>(), color_list[1].cast<float>(),
+                            color_list[2].cast<float>()), ior);
+             }),
+             py::arg("color"), py::arg("index_of_refraction"));
 }
