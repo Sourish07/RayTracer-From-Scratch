@@ -15,7 +15,7 @@ Ray Glass::bounce(const Ray &r, const Vector &normal,
     auto sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
     auto cannotRefract = refractionRatio * sinTheta > 1.0;
-    double randomNum = random();
+    double randomNum = rand() / (RAND_MAX + 1.0);
     auto newDirection =
         cannotRefract || reflectance(cosTheta, refractionRatio) > randomNum
             ? reflect(unitDirection, _normal)

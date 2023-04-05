@@ -8,6 +8,7 @@
 #include "materials/diffuse.h"
 #include "materials/emissive.h"
 #include "materials/glass.h"
+#include "materials/metal.h"
 
 #include "shapes/shape.h"
 #include "shapes/sphere.h"
@@ -31,7 +32,7 @@ PYBIND11_MODULE(raytracer, m) {
              py::arg("max_depth"), py::arg("background"),
              py::arg("aspect_ratio"))
         .def("add_shape", &Renderer::addShape, py::arg("shape"))
-        .def("render", &Renderer::render, py::arg("cam"));
+        .def("render", &Renderer::render, py::arg("cam"), py::arg("output_filename"));
 
     py::class_<Camera>(m, "Camera")
         .def(py::init([](const py::list &origin_list, float aspect_ratio,
@@ -89,4 +90,12 @@ PYBIND11_MODULE(raytracer, m) {
                             color_list[2].cast<float>()), ior);
              }),
              py::arg("color"), py::arg("index_of_refraction"));
+
+    py::class_<Metal, std::shared_ptr<Metal>, Material>(materialsModule, "Metal")
+        .def(py::init([](const py::list color_list, double fuzz = 0.0) {
+                 return std::make_unique<Metal>(
+                     Vector(color_list[0].cast<float>(), color_list[1].cast<float>(),
+                            color_list[2].cast<float>()), fuzz);
+             }),
+             py::arg("color"), py::arg("fuzz"));
 }
