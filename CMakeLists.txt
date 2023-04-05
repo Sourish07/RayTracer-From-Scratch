@@ -17,7 +17,10 @@ find_package(pybind11 REQUIRED)
 pybind11_add_module(raytracer 
                     pybindRaytracer.cc 
                     renderer.cpp 
-                    shapes/sphere.cpp 
+                    shapes/sphere.cpp
+                    shapes/plane.cpp
+                    shapes/cube.cpp
+                    shapes/rectangle.cpp
                     vector.cpp 
                     camera.cpp 
                     ray.cpp

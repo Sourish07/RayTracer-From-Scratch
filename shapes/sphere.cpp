@@ -3,7 +3,7 @@
 Sphere::Sphere(const Vector &center, const double radius, const std::shared_ptr<Material>& material)
     : Shape(material), center(center), radius(radius) {}
 
-double Sphere::hit(Ray &r) const {
+double Sphere::hit(const Ray &r) const {
     Vector oc = r.origin - center;
     double a = r.direction.dot(r.direction);
     double b = 2 * oc.dot(r.direction);
@@ -22,6 +22,6 @@ double Sphere::hit(Ray &r) const {
     return -1;
 }
 
-Vector Sphere::normalAt(Vector &p) const { 
+Vector Sphere::normalAt(const Vector &p) const { 
     return (p - center).normalize(); 
 }
