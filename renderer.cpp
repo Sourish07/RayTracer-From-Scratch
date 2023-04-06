@@ -31,19 +31,18 @@ Vector Renderer::rayColor(Ray &r, int depth) const {
         return background;
     }
 
-    Vector emitted = hitShape->material->emitted();
-    if (std::dynamic_pointer_cast<Emissive>(hitShape->material) != nullptr) {
+    if (std::dynamic_pointer_cast<Emissive>(hitShape->material) != nullptr) { // Checking if hitShape material is Emissive
         // cast hitShape material to Emissive
-        emitted = std::dynamic_pointer_cast<Emissive>(hitShape->material)->emitted();
-        return emitted;
+        return std::dynamic_pointer_cast<Emissive>(hitShape->material)->emitted();
     }
+
 
     Vector hitPos = r(t);
     Vector normal = hitShape->normalAt(hitPos);
     Vector color = hitShape->material->color;
 
     Ray bounceRay = hitShape->material->bounce(r, normal, hitPos);
-    return emitted + color * rayColor(bounceRay, depth - 1);
+    return color * rayColor(bounceRay, depth - 1);
 }
 
 void Renderer::addShape(std::shared_ptr<Shape> shape) { shapes.push_back(shape); }

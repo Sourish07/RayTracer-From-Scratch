@@ -5,7 +5,7 @@ Emissive::Emissive(const Vector &color, const double intensity)
 
 Ray Emissive::bounce(const Ray &r, const Vector &normal,
                      const Vector &hitPos) const {
-    return Ray(Vector(), Vector());
+    return r;
 }
 
 Vector Emissive::emitted() const {

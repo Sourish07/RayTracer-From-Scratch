@@ -19,9 +19,9 @@ small_box = rt.shapes.Cube([-0.4, -0.6, -0.1], 0.3, whiteMat)
 gold_sphere = rt.shapes.Sphere([0, 0.3, -0.5], 0.3, goldMat)
 glass_sphere = rt.shapes.Sphere([0.3, -0.5, 0.4], 0.3, glassMat)
 
-camera = rt.Camera([0, 0, 3], 16 / 9, 60, 1)
+camera = rt.Camera([0, 0, 3], 1, 60, 1)
 
-renderer = rt.Renderer(1080, samples_per_pixel=10000, max_depth=50, background=[0, 0, 0], aspect_ratio=16 / 9)
+renderer = rt.Renderer(540, samples_per_pixel=10000, max_depth=20, background=[0, 0, 0], aspect_ratio=1)
 
 renderer.add_shape(left_wall)
 renderer.add_shape(right_wall)
