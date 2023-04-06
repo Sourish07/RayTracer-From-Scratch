@@ -14,6 +14,8 @@ string(STRIP ${PYBIND11_DIR} PYBIND11_DIR)
 set(pybind11_DIR ${PYBIND11_DIR})
 
 find_package(pybind11 REQUIRED)
+find_package(OpenMP REQUIRED)
+
 pybind11_add_module(raytracer 
                     pybindRaytracer.cc 
                     renderer.cpp 
@@ -32,3 +34,5 @@ pybind11_add_module(raytracer
                     )
 
 include_directories(${pybind11_INCLUDE_DIRS})
+
+target_link_libraries(raytracer PUBLIC OpenMP::OpenMP_CXX)

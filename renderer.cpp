@@ -1,8 +1,8 @@
-#include "renderer.h"
-
 #include <iostream>
-#include <fstream>
+#include <omp.h>
+
 #include "materials/emissive.h"
+#include "renderer.h"
 
 Renderer::Renderer(int imageHeight, int samplesPerPixel, int maxDepth,
                    Vector background, float aspectRatio)
@@ -31,11 +31,12 @@ Vector Renderer::rayColor(Ray &r, int depth) const {
         return background;
     }
 
-    if (std::dynamic_pointer_cast<Emissive>(hitShape->material) != nullptr) { // Checking if hitShape material is Emissive
+    if (std::dynamic_pointer_cast<Emissive>(hitShape->material) !=
+        nullptr) { // Checking if hitShape material is Emissive
         // cast hitShape material to Emissive
-        return std::dynamic_pointer_cast<Emissive>(hitShape->material)->emitted();
+        return std::dynamic_pointer_cast<Emissive>(hitShape->material)
+            ->emitted();
     }
-
 
     Vector hitPos = r(t);
     Vector normal = hitShape->normalAt(hitPos);
@@ -45,34 +46,56 @@ Vector Renderer::rayColor(Ray &r, int depth) const {
     return color * rayColor(bounceRay, depth - 1);
 }
 
-void Renderer::addShape(std::shared_ptr<Shape> shape) { shapes.push_back(shape); }
+void Renderer::addShape(std::shared_ptr<Shape> shape) {
+    shapes.push_back(shape);
+}
 
 void Renderer::render(Camera &camera, std::string outputFilename) const {
-    std::ofstream out(outputFilename);
+    // Print the number of threads being used
+    std::random_device rd;
+    std::mt19937 gen(
+        rd()); // Use the Mersenne Twister engine as a random number generator
+    std::uniform_real_distribution<> dist(-1, 1);
 
-    out << "P3\n" << imageWidth << " " << imageHeight << "\n255\n";
+    Vector *buffer = new Vector[imageWidth * imageHeight];
 
-    for (int j = imageHeight - 1; j >= 0; j--) {
-        std::cout << "\rScanlines remaining: " << j << " " << std::flush;
+    std::cout << "Number of threads: " << omp_get_max_threads() << std::endl;
+
+#pragma omp parallel for schedule(dynamic, 1)
+    for (int j = 0; j < imageHeight; j++) {
+        fprintf(stderr, "\rRendering (%d spp) %5.2f%%", samplesPerPixel,
+                100. * j / (imageHeight - 1));
+
         for (int i = 0; i < imageWidth; i++) {
             Vector color = Vector(0, 0, 0);
             for (int s = 0; s < samplesPerPixel; s++) {
-                double r1 = rand() / (RAND_MAX + 1.0);
-                double r2 = rand() / (RAND_MAX + 1.0);
-
-                double u = (i + r1) / (imageWidth - 1);
-                double v = (j + r2) / (imageHeight - 1);
-                Ray r = camera.getRay(u, v);
-                color += rayColor(r, maxDepth);
+                double u = (i + dist(gen)) / (imageWidth - 1);
+                double v = (j + dist(gen)) / (imageHeight - 1);
+                Ray camRay = camera.getRay(u, v);
+                color += rayColor(camRay, maxDepth);
             }
-            color /= samplesPerPixel;
-            color = Vector(sqrt(color.x), sqrt(color.y), sqrt(color.z)); // gamma correction (gamma = 2)
-            int ir = static_cast<int>(255.999 * color.x);
-            int ig = static_cast<int>(255.999 * color.y);
-            int ib = static_cast<int>(255.999 * color.z);
-            out << ir << " " << ig << " " << ib << "\n";
+            color =
+                Vector(sqrt(color.x / samplesPerPixel),
+                       sqrt(color.y / samplesPerPixel),
+                       sqrt(color.z /
+                            samplesPerPixel)); // gamma correction (gamma = 2)
+
+            int ir = 255.999 * color.x;
+            int ig = 255.999 * color.y;
+            int ib = 255.999 * color.z;
+
+            buffer[(imageHeight - j - 1) * imageWidth + i] +=
+                Vector(ir, ig, ib);
         }
     }
-    out.close();
-    std::cout << "\nDone.\n";
+
+    FILE *f = fopen(outputFilename.c_str(), "w");
+    fprintf(f, "P3\n%d %d\n%d\n", imageWidth, imageHeight, 255);
+
+    for (int i = 0; i < imageWidth * imageHeight; i++) {
+        fprintf(f, "%d %d %d\n", (int)buffer[i].x, (int)buffer[i].y,
+                (int)buffer[i].z);
+    }
+
+    fprintf(stderr, "\nDone!\n");
 }

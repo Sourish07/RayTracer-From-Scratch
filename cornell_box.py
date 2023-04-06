@@ -1,4 +1,5 @@
 import raytracer as rt
+import time
 
 redMat = rt.materials.Diffuse([1, 0, 0])
 blueMat = rt.materials.Diffuse([0, 0, 1])
@@ -21,7 +22,7 @@ glass_sphere = rt.shapes.Sphere([0.3, -0.5, 0.4], 0.3, glassMat)
 
 camera = rt.Camera([0, 0, 3], 1, 60, 1)
 
-renderer = rt.Renderer(540, samples_per_pixel=10000, max_depth=20, background=[0, 0, 0], aspect_ratio=1)
+renderer = rt.Renderer(720, samples_per_pixel=10000, max_depth=20, background=[0, 0, 0], aspect_ratio=1)
 
 renderer.add_shape(left_wall)
 renderer.add_shape(right_wall)
@@ -33,4 +34,7 @@ renderer.add_shape(small_box)
 renderer.add_shape(gold_sphere)
 renderer.add_shape(glass_sphere)
 
+start = time.time()
 renderer.render(camera, output_filename="cornell_box.ppm")
+end = time.time()
+print(f"Rendered in {end - start} seconds")
