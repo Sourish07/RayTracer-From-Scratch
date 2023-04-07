@@ -11,6 +11,7 @@
 #include "materials/metal.h"
 
 #include "shapes/cube.h"
+#include "shapes/disc.h"
 #include "shapes/plane.h"
 #include "shapes/rectangle.h"
 #include "shapes/shape.h"
@@ -23,12 +24,12 @@ PYBIND11_MODULE(raytracer, m) {
 
     py::class_<Renderer>(m, "Renderer")
         .def(py::init([](int image_height, int samples_per_pixel, int max_depth,
-                         const py::list &background_list, float aspect_ratio) {
+                         const py::list &background_list, double aspect_ratio) {
                  return std::make_unique<Renderer>(
                      image_height, samples_per_pixel, max_depth,
-                     Vector(background_list[0].cast<float>(),
-                            background_list[1].cast<float>(),
-                            background_list[2].cast<float>()),
+                     Vector(background_list[0].cast<double>(),
+                            background_list[1].cast<double>(),
+                            background_list[2].cast<double>()),
                      aspect_ratio);
              }),
              py::arg("image_height"), py::arg("samples_per_pixel"),
@@ -39,12 +40,12 @@ PYBIND11_MODULE(raytracer, m) {
              py::arg("output_filename"));
 
     py::class_<Camera>(m, "Camera")
-        .def(py::init([](const py::list &origin_list, float aspect_ratio,
-                         float fov, float focal_length) {
+        .def(py::init([](const py::list &origin_list, double aspect_ratio,
+                         double fov, double focal_length) {
                  return std::make_unique<Camera>(
-                     Vector(origin_list[0].cast<float>(),
-                            origin_list[1].cast<float>(),
-                            origin_list[2].cast<float>()),
+                     Vector(origin_list[0].cast<double>(),
+                            origin_list[1].cast<double>(),
+                            origin_list[2].cast<double>()),
                      aspect_ratio, fov, focal_length);
              }),
              py::arg("origin"), py::arg("aspect_ratio"), py::arg("fov"),
@@ -58,8 +59,8 @@ PYBIND11_MODULE(raytracer, m) {
         .def(py::init([](const py::list center, double radius,
                          std::shared_ptr<Material> mat) {
                  return std::make_unique<Sphere>(
-                     Vector(center[0].cast<float>(), center[1].cast<float>(),
-                            center[2].cast<float>()),
+                     Vector(center[0].cast<double>(), center[1].cast<double>(),
+                            center[2].cast<double>()),
                      radius, mat);
              }),
              py::arg("center"), py::arg("radius"), py::arg("material"));
@@ -67,9 +68,9 @@ PYBIND11_MODULE(raytracer, m) {
     py::class_<Cube, std::shared_ptr<Cube>, Shape>(shapesModule, "Cube")
         .def(py::init([](const py::list center, double radius,
                          std::shared_ptr<Material> mat) {
-                 return std::make_unique<Cube>(Vector(center[0].cast<float>(),
-                                                      center[1].cast<float>(),
-                                                      center[2].cast<float>()),
+                 return std::make_unique<Cube>(Vector(center[0].cast<double>(),
+                                                      center[1].cast<double>(),
+                                                      center[2].cast<double>()),
                                                radius, mat);
              }),
              py::arg("center"), py::arg("radius"), py::arg("material"));
@@ -111,15 +112,28 @@ PYBIND11_MODULE(raytracer, m) {
         .def(py::init([](const py::list normal, const py::list point,
                          const py::list color, std::shared_ptr<Material> mat) {
                  return std::make_unique<Plane>(
-                     Vector(normal[0].cast<float>(), normal[1].cast<float>(),
-                            normal[2].cast<float>()),
-                     Vector(point[0].cast<float>(), point[1].cast<float>(),
-                            point[2].cast<float>()),
-                     Vector(color[0].cast<float>(), color[1].cast<float>(),
-                            color[2].cast<float>()),
+                     Vector(normal[0].cast<double>(), normal[1].cast<double>(),
+                            normal[2].cast<double>()),
+                     Vector(point[0].cast<double>(), point[1].cast<double>(),
+                            point[2].cast<double>()),
+                     Vector(color[0].cast<double>(), color[1].cast<double>(),
+                            color[2].cast<double>()),
                      mat);
              }),
              py::arg("normal"), py::arg("point"), py::arg("color"),
+             py::arg("material"));
+
+       py::class_<Disc, std::shared_ptr<Disc>, Shape>(shapesModule, "Disc")
+        .def(py::init([](const py::list center, const py::list normal,
+                         double radius, std::shared_ptr<Material> mat) {
+                 return std::make_unique<Disc>(
+                     Vector(center[0].cast<double>(), center[1].cast<double>(),
+                            center[2].cast<double>()),
+                     Vector(normal[0].cast<double>(), normal[1].cast<double>(),
+                            normal[2].cast<double>()),
+                     radius, mat);
+             }),
+             py::arg("center"), py::arg("normal"), py::arg("radius"),
              py::arg("material"));
 
     py::module materialsModule =
@@ -132,8 +146,8 @@ PYBIND11_MODULE(raytracer, m) {
                                                             "Diffuse")
         .def(py::init([](const py::list color_list) {
                  return std::make_unique<Diffuse>(Vector(
-                     color_list[0].cast<float>(), color_list[1].cast<float>(),
-                     color_list[2].cast<float>()));
+                     color_list[0].cast<double>(), color_list[1].cast<double>(),
+                     color_list[2].cast<double>()));
              }),
              py::arg("color"));
 
@@ -141,9 +155,9 @@ PYBIND11_MODULE(raytracer, m) {
                                                               "Emissive")
         .def(py::init([](const py::list color_list, double intensity) {
                  return std::make_unique<Emissive>(
-                     Vector(color_list[0].cast<float>(),
-                            color_list[1].cast<float>(),
-                            color_list[2].cast<float>()),
+                     Vector(color_list[0].cast<double>(),
+                            color_list[1].cast<double>(),
+                            color_list[2].cast<double>()),
                      intensity);
              }),
              py::arg("color"), py::arg("intensity"));
@@ -152,9 +166,9 @@ PYBIND11_MODULE(raytracer, m) {
                                                         "Glass")
         .def(py::init([](const py::list color_list, double ior) {
                  return std::make_unique<Glass>(
-                     Vector(color_list[0].cast<float>(),
-                            color_list[1].cast<float>(),
-                            color_list[2].cast<float>()),
+                     Vector(color_list[0].cast<double>(),
+                            color_list[1].cast<double>(),
+                            color_list[2].cast<double>()),
                      ior);
              }),
              py::arg("color"), py::arg("index_of_refraction"));
@@ -163,9 +177,9 @@ PYBIND11_MODULE(raytracer, m) {
                                                         "Metal")
         .def(py::init([](const py::list color_list, double fuzz) {
                  return std::make_unique<Metal>(
-                     Vector(color_list[0].cast<float>(),
-                            color_list[1].cast<float>(),
-                            color_list[2].cast<float>()),
+                     Vector(color_list[0].cast<double>(),
+                            color_list[1].cast<double>(),
+                            color_list[2].cast<double>()),
                      fuzz);
              }),
              py::arg("color"), py::arg("fuzz") = 0.0);

@@ -14,15 +14,16 @@ top_wall = rt.shapes.RectangleXZ(-1, 1, -1, 1, 1, whiteMat, flipNormal=True)
 bottom_wall = rt.shapes.RectangleXZ(-1, 1, -1, 1, -1, whiteMat)
 back_wall = rt.shapes.RectangleXY(-1, 1, -1, 1, -1, whiteMat)
 
-light = rt.shapes.RectangleXZ(-0.2, 0.2, -0.2, 0.2, 0.99, lightMat)
+# light = rt.shapes.RectangleXZ(-0.2, 0.2, -0.2, 0.2, 0.9, lightMat)
+light = rt.shapes.Disc([0, 0.999, 0], [0, -1, 0], 0.3, lightMat)
 
-small_box = rt.shapes.Cube([-0.4, -0.6, -0.1], 0.3, whiteMat)
+small_box = rt.shapes.Cube([-0.4, -0.7, -0.2], 0.3, whiteMat)
 gold_sphere = rt.shapes.Sphere([0, 0.3, -0.5], 0.3, goldMat)
 glass_sphere = rt.shapes.Sphere([0.3, -0.5, 0.4], 0.3, glassMat)
 
 camera = rt.Camera([0, 0, 3], 1, 60, 1)
 
-renderer = rt.Renderer(720, samples_per_pixel=10000, max_depth=20, background=[0, 0, 0], aspect_ratio=1)
+renderer = rt.Renderer(720, samples_per_pixel=10000, max_depth=25, background=[0, 0, 0], aspect_ratio=1)
 
 renderer.add_shape(left_wall)
 renderer.add_shape(right_wall)

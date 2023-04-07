@@ -23,6 +23,7 @@ pybind11_add_module(raytracer
                     shapes/plane.cpp
                     shapes/cube.cpp
                     shapes/rectangle.cpp
+                    shapes/disc.cpp
                     vector.cpp 
                     camera.cpp 
                     ray.cpp

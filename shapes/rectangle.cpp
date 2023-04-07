@@ -7,7 +7,7 @@ RectangleXY::RectangleXY(const double x0, const double x1, const double y0,
 
 double RectangleXY::hit(const Ray &ray) const {
     double t = (z - ray.origin.z) / ray.direction.z;
-    if (t < 0) {
+    if (t < 1e-3) {
         return -1;
     }
     double x = ray.origin.x + t * ray.direction.x;
@@ -17,9 +17,9 @@ double RectangleXY::hit(const Ray &ray) const {
     }
 
     // check if direction of ray and normal of rectangle are in the same direction
-    if (ray.direction.z * (flipNormal ? -1 : 1) < 0) {
-        return -1;
-    }
+    // if (ray.direction.z * (flipNormal ? -1 : 1) < 0) {
+    //     return -1;
+    // }
     return t;
 }
 
@@ -32,7 +32,7 @@ RectangleXZ::RectangleXZ(const double x0, const double x1, const double z0,
 
 double RectangleXZ::hit(const Ray &ray) const {
     double t = (y - ray.origin.y) / ray.direction.y;
-    if (t < 0) {
+    if (t < 1e-3) {
         return -1;
     }
     double x = ray.origin.x + t * ray.direction.x;
@@ -41,9 +41,9 @@ double RectangleXZ::hit(const Ray &ray) const {
         return -1;
     }
     // check if direction of ray and normal of rectangle are in the same direction
-    if (ray.direction.y * (flipNormal ? -1 : 1) < 0) {
-        return -1;
-    }
+    // if (ray.direction.y * (flipNormal ? -1 : 1) < 0) {
+    //     return -1;
+    // }
 
     return t;
 }
@@ -57,7 +57,7 @@ RectangleYZ::RectangleYZ(const double y0, const double y1, const double z0,
 
 double RectangleYZ::hit(const Ray &ray) const {
     double t = (x - ray.origin.x) / ray.direction.x;
-    if (t < 0) {
+    if (t < 1e-3) {
         return -1;
     }
     double y = ray.origin.y + t * ray.direction.y;
@@ -67,9 +67,9 @@ double RectangleYZ::hit(const Ray &ray) const {
     }
 
     // check if direction of ray and normal of rectangle are in the same direction
-    if (ray.direction.x * (flipNormal ? -1 : 1) < 0) {
-        return -1;
-    }
+    // if (ray.direction.x * (flipNormal ? -1 : 1) < 0) {
+    //     return -1;
+    // }
     return t;
 }
 
