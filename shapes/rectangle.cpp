@@ -15,6 +15,11 @@ double RectangleXY::hit(const Ray &ray) const {
     if (x < x0 || x > x1 || y < y0 || y > y1) {
         return -1;
     }
+
+    // check if direction of ray and normal of rectangle are in the same direction
+    if (ray.direction.z * (flipNormal ? -1 : 1) < 0) {
+        return -1;
+    }
     return t;
 }
 
@@ -35,6 +40,11 @@ double RectangleXZ::hit(const Ray &ray) const {
     if (x < x0 || x > x1 || z < z0 || z > z1) {
         return -1;
     }
+    // check if direction of ray and normal of rectangle are in the same direction
+    if (ray.direction.y * (flipNormal ? -1 : 1) < 0) {
+        return -1;
+    }
+
     return t;
 }
 
@@ -53,6 +63,11 @@ double RectangleYZ::hit(const Ray &ray) const {
     double y = ray.origin.y + t * ray.direction.y;
     double z = ray.origin.z + t * ray.direction.z;
     if (y < y0 || y > y1 || z < z0 || z > z1) {
+        return -1;
+    }
+
+    // check if direction of ray and normal of rectangle are in the same direction
+    if (ray.direction.x * (flipNormal ? -1 : 1) < 0) {
         return -1;
     }
     return t;
