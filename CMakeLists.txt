@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.11.0)
 project(raytracer VERSION 0.1.0)
 
+# For Apple, use the following to compile:
+# cmake -D CMAKE_CXX_COMPILER=g++-12 ..
+
+# Set OpenMP root directory on macOS
+if (APPLE)
+    execute_process(
+        COMMAND brew --prefix libomp
+        OUTPUT_VARIABLE LIBOMP_PREFIX
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(OpenMP_ROOT ${LIBOMP_PREFIX})
+endif()
+
+cmake_policy(SET CMP0074 NEW)
+
 # Set C standard to C11
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
