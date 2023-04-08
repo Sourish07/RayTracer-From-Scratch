@@ -1,14 +1,20 @@
 #include <iostream>
+
+#ifdef USE_OPENMP
 #include <omp.h>
+#endif
 
 #include "materials/emissive.h"
 #include "renderer.h"
 
 Renderer::Renderer(int imageHeight, int samplesPerPixel, int maxDepth,
                    Vector background, float aspectRatio)
-    : imageHeight(imageHeight), samplesPerPixel(samplesPerPixel),
-      maxDepth(maxDepth), background(background), aspectRatio(aspectRatio) {
-    imageWidth = (int) (aspectRatio * imageHeight);
+    : imageHeight(imageHeight),
+      samplesPerPixel(samplesPerPixel),
+      maxDepth(maxDepth),
+      background(background),
+      aspectRatio(aspectRatio) {
+    imageWidth = (int)(aspectRatio * imageHeight);
 }
 
 Vector Renderer::rayColor(Ray &r, int depth) const {
@@ -32,7 +38,7 @@ Vector Renderer::rayColor(Ray &r, int depth) const {
     }
 
     if (std::dynamic_pointer_cast<Emissive>(hitShape->material) !=
-        nullptr) { // Checking if hitShape material is Emissive
+        nullptr) {  // Checking if hitShape material is Emissive
         // cast hitShape material to Emissive
         return std::dynamic_pointer_cast<Emissive>(hitShape->material)
             ->emitted();
@@ -53,15 +59,15 @@ void Renderer::addShape(std::shared_ptr<Shape> shape) {
 void Renderer::render(Camera &camera, std::string outputFilename) const {
     // Print the number of threads being used
     std::random_device rd;
-    std::mt19937 gen(
-        rd()); // Use the Mersenne Twister engine as a random number generator
+    std::mt19937 gen(rd());
     std::uniform_real_distribution<> dist(-1, 1);
 
     Vector *buffer = new Vector[imageWidth * imageHeight];
-
+#ifdef USE_OPENMP
     std::cout << "Number of threads: " << omp_get_max_threads() << std::endl;
 
 #pragma omp parallel for schedule(dynamic, 1)
+#endif
     for (int j = 0; j < imageHeight; j++) {
         fprintf(stderr, "\rRendering (%d spp) %5.2f%%", samplesPerPixel,
                 100. * j / (imageHeight - 1));
@@ -78,7 +84,7 @@ void Renderer::render(Camera &camera, std::string outputFilename) const {
                 Vector(sqrt(color.x / samplesPerPixel),
                        sqrt(color.y / samplesPerPixel),
                        sqrt(color.z /
-                            samplesPerPixel)); // gamma correction (gamma = 2)
+                            samplesPerPixel));  // gamma correction (gamma = 2)
 
             double ir = 255.999 * color.x;
             double ig = 255.999 * color.y;

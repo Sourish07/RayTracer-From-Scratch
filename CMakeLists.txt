@@ -1,20 +1,17 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.11.0)
 project(raytracer VERSION 0.1.0)
 
-# add_executable(main test.cpp vector.cpp)
+# Set C standard to C11
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
-execute_process (
-    COMMAND python3 -c "import pybind11; print(pybind11.get_cmake_dir())"
-    OUTPUT_VARIABLE PYBIND11_DIR
-)
+# Set C++ standard to C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-string(STRIP ${PYBIND11_DIR} PYBIND11_DIR)
-
-# set(pybind11_DIR /home/sourish/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
-set(pybind11_DIR ${PYBIND11_DIR})
-
-find_package(pybind11 REQUIRED)
-find_package(OpenMP REQUIRED)
+add_subdirectory(extern/pybind11)
+find_package(OpenMP)
 
 pybind11_add_module(raytracer 
                     pybindRaytracer.cc 
@@ -36,4 +33,8 @@ pybind11_add_module(raytracer
 
 include_directories(${pybind11_INCLUDE_DIRS})
 
-target_link_libraries(raytracer PUBLIC OpenMP::OpenMP_CXX)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(raytracer PUBLIC OpenMP::OpenMP_CXX)
+    target_compile_definitions(raytracer PUBLIC USE_OPENMP)
+    message(STATUS "Using OpenMP")
+endif()
