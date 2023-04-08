@@ -6,7 +6,7 @@ Plane::Plane(const Vector &normal, const Vector &point, const Vector &color,
 }
 
 double Plane::hit(const Ray &ray) const {
-    float denom = ray.direction.dot(normal);
+    double denom = ray.direction.dot(normal);
     if (denom > 1e-6) {
         Vector p0l0 = point - ray.origin;
         auto t = p0l0.dot(normal) / denom;

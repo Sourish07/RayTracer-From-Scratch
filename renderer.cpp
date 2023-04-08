@@ -8,7 +8,7 @@ Renderer::Renderer(int imageHeight, int samplesPerPixel, int maxDepth,
                    Vector background, float aspectRatio)
     : imageHeight(imageHeight), samplesPerPixel(samplesPerPixel),
       maxDepth(maxDepth), background(background), aspectRatio(aspectRatio) {
-    imageWidth = aspectRatio * imageHeight;
+    imageWidth = (int) (aspectRatio * imageHeight);
 }
 
 Vector Renderer::rayColor(Ray &r, int depth) const {
@@ -80,9 +80,9 @@ void Renderer::render(Camera &camera, std::string outputFilename) const {
                        sqrt(color.z /
                             samplesPerPixel)); // gamma correction (gamma = 2)
 
-            int ir = 255.999 * color.x;
-            int ig = 255.999 * color.y;
-            int ib = 255.999 * color.z;
+            double ir = 255.999 * color.x;
+            double ig = 255.999 * color.y;
+            double ib = 255.999 * color.z;
 
             buffer[(imageHeight - j - 1) * imageWidth + i] +=
                 Vector(ir, ig, ib);
