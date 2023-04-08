@@ -1,8 +1,8 @@
 #include "plane.h"
 
-Plane::Plane(const Vector &normal, const Vector &point, const Vector &color,
+Plane::Plane(const Vector &point, const Vector &normal,
              const std::shared_ptr<Material>& material)
-    : Shape(material), normal(normal), point(point) {
+    : Shape(material), point(point), normal(normal) {
 }
 
 double Plane::hit(const Ray &ray) const {

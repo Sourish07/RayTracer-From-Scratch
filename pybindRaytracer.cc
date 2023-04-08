@@ -68,10 +68,10 @@ PYBIND11_MODULE(raytracer, m) {
     py::class_<Cube, std::shared_ptr<Cube>, Shape>(shapesModule, "Cube")
         .def(py::init([](const py::list center, double radius,
                          std::shared_ptr<Material> mat) {
-                 return std::make_unique<Cube>(Vector(center[0].cast<double>(),
-                                                      center[1].cast<double>(),
-                                                      center[2].cast<double>()),
-                                               radius, mat);
+                 return std::make_unique<Cube>(
+                     Vector(center[0].cast<double>(), center[1].cast<double>(),
+                            center[2].cast<double>()),
+                     radius, mat);
              }),
              py::arg("center"), py::arg("radius"), py::arg("material"));
 
@@ -109,21 +109,18 @@ PYBIND11_MODULE(raytracer, m) {
              py::arg("flipNormal") = false);
 
     py::class_<Plane, std::shared_ptr<Plane>, Shape>(shapesModule, "Plane")
-        .def(py::init([](const py::list normal, const py::list point,
-                         const py::list color, std::shared_ptr<Material> mat) {
+        .def(py::init([](const py::list point, const py::list normal,
+                         std::shared_ptr<Material> mat) {
                  return std::make_unique<Plane>(
                      Vector(normal[0].cast<double>(), normal[1].cast<double>(),
                             normal[2].cast<double>()),
                      Vector(point[0].cast<double>(), point[1].cast<double>(),
                             point[2].cast<double>()),
-                     Vector(color[0].cast<double>(), color[1].cast<double>(),
-                            color[2].cast<double>()),
                      mat);
              }),
-             py::arg("normal"), py::arg("point"), py::arg("color"),
-             py::arg("material"));
+             py::arg("point"), py::arg("normal"), py::arg("material"));
 
-       py::class_<Disc, std::shared_ptr<Disc>, Shape>(shapesModule, "Disc")
+    py::class_<Disc, std::shared_ptr<Disc>, Shape>(shapesModule, "Disc")
         .def(py::init([](const py::list center, const py::list normal,
                          double radius, std::shared_ptr<Material> mat) {
                  return std::make_unique<Disc>(

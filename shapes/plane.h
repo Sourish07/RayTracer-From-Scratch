@@ -6,7 +6,7 @@
 
 class Plane : public Shape {
     public:
-        Plane(const Vector &normal, const Vector &point, const Vector &color, const std::shared_ptr<Material>& material);
+        Plane(const Vector &point, const Vector &normal, const std::shared_ptr<Material>& material);
         double hit(const Ray &ray) const;
         Vector normalAt(const Vector &p) const;
 
