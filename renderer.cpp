@@ -86,21 +86,20 @@ void Renderer::render(Camera &camera, std::string outputFilename) const {
                        sqrt(color.z /
                             samplesPerPixel));  // gamma correction (gamma = 2)
 
-            double ir = 255.999 * color.x;
-            double ig = 255.999 * color.y;
-            double ib = 255.999 * color.z;
-
+            // Writing from the bottom left corner
             buffer[(imageHeight - j - 1) * imageWidth + i] +=
-                Vector(ir, ig, ib);
+                Vector(color.x, color.y, color.z);
         }
     }
 
     FILE *f = fopen(outputFilename.c_str(), "w");
     fprintf(f, "P3\n%d %d\n%d\n", imageWidth, imageHeight, 255);
 
+    // Clamping each of the color values to 255
     for (int i = 0; i < imageWidth * imageHeight; i++) {
-        fprintf(f, "%d %d %d\n", (int)buffer[i].x, (int)buffer[i].y,
-                (int)buffer[i].z);
+        fprintf(f, "%d %d %d\n", (int)std::min(255.999 * buffer[i].x, 255.),
+                (int)std::min(255.999 * buffer[i].y, 255.),
+                (int)std::min(255.999 * buffer[i].z, 255.));
     }
 
     fprintf(stderr, "\nDone!\n");
