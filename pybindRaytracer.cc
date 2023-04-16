@@ -141,12 +141,12 @@ PYBIND11_MODULE(raytracer, m) {
 
     py::class_<Diffuse, std::shared_ptr<Diffuse>, Material>(materialsModule,
                                                             "Diffuse")
-        .def(py::init([](const py::list color_list) {
+        .def(py::init([](const py::list color_list, const double roughness) {
                  return std::make_unique<Diffuse>(Vector(
                      color_list[0].cast<double>(), color_list[1].cast<double>(),
-                     color_list[2].cast<double>()));
+                     color_list[2].cast<double>()), roughness);
              }),
-             py::arg("color"));
+             py::arg("color"), py::arg("roughness") = 1.0);
 
     py::class_<Emissive, std::shared_ptr<Emissive>, Material>(materialsModule,
                                                               "Emissive")

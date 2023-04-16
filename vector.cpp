@@ -1,5 +1,12 @@
 #include "vector.h"
 
+std::mt19937 Vector::gen([]() {
+    std::random_device rd;
+    return rd();
+}());
+std::uniform_real_distribution<double> Vector::uniDist(0.0, 1.0);
+std::normal_distribution<double> Vector::normDist(0.0, 1.0);
+
 Vector::Vector(double x, double y, double z) : x(x), y(y), z(z) {}
 
 Vector Vector::operator+(const Vector &other) const {
@@ -108,6 +115,15 @@ Vector Vector::randomInUnitSphere() {
     }
 }
 
-Vector Vector::randomUnitVector() { return randomInUnitSphere().normalize(); }
+Vector Vector::randomUnitVector() {
+    double x = normDist(gen);
+    double y = normDist(gen);
+    double z = normDist(gen);
+    if (x == 0 && y == 0 && z == 0)
+    {
+        return Vector(0, 1, 0);
+    }
+    return Vector(x, y, z) / std::sqrt(x * x + y * y + z * z);
+}
 
 Vector operator*(double scalar, const Vector &v) { return v * scalar; }

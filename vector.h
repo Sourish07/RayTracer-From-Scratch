@@ -37,6 +37,10 @@ public:
 
 public:
     double x, y, z;
+
+    static std::mt19937 gen;
+    static std::uniform_real_distribution<double> uniDist;
+    static std::normal_distribution<double> normDist;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);
