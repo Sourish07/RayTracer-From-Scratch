@@ -27,6 +27,7 @@ public:
     double lengthSquared() const;
     Vector normalize() const;
     double dot(const Vector &other) const;
+    Vector cross(const Vector &other) const;
     bool nearZero() const;
 
 
@@ -34,6 +35,7 @@ public:
     static Vector random(double min, double max);
     static Vector randomInUnitSphere();
     static Vector randomUnitVector();
+    static Vector randomCosWeighted();
 
 public:
     double x, y, z;

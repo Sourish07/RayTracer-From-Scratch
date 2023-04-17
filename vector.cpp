@@ -127,3 +127,19 @@ Vector Vector::randomUnitVector() {
 }
 
 Vector operator*(double scalar, const Vector &v) { return v * scalar; }
+
+Vector Vector::randomCosWeighted() {
+    double u = uniDist(gen);
+    double v = uniDist(gen);
+
+    double radial = std::sqrt(u);
+    double theta = 2 * M_PI * v;
+
+    return Vector(radial * std::cos(theta), radial * std::sin(theta), std::sqrt(1 - u));
+}
+
+Vector Vector::cross(const Vector &other) const {
+    return Vector(y * other.z - z * other.y, 
+                  z * other.x - x * other.z,
+                  x * other.y - y * other.x);
+}

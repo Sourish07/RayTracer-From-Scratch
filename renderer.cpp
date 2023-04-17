@@ -46,8 +46,16 @@ Vector Renderer::rayColor(Ray &r, int depth) const {
     Vector normal = hitShape->normalAt(hitPos);
     Vector color = hitShape->material->color;
 
+
     Ray bounceRay = hitShape->material->bounce(r, normal, hitPos);
-    return color * rayColor(bounceRay, depth - 1);
+    float pdf = normal.dot(bounceRay.direction) / M_PI;
+    //std:: cout << "pdf: " << pdf << std::endl;
+
+    float scatteringPdfCos = normal.dot(bounceRay.direction);
+    scatteringPdfCos = scatteringPdfCos < 0 ? 0 : scatteringPdfCos / M_PI;
+    //std:: cout << "scatteringPdfCos: " << scatteringPdfCos << std::endl;
+
+    return color * scatteringPdfCos * rayColor(bounceRay, depth - 1) / pdf;
 }
 
 void Renderer::addShape(std::shared_ptr<Shape> shape) { shapes.push_back(shape); }

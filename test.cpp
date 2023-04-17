@@ -8,18 +8,13 @@
 #include "vector.h"
 
 int main() {
-    auto redMat = std::make_shared<Diffuse>(Vector(1, 0, 0));
-    auto light = std::make_shared<Emissive>(Vector(1, 1, 1), 3);
-    auto sphere = std::make_shared<Sphere>(Vector(0, 0, -2), 0.5, light);
+    Vector v1 = Vector::randomUnitVector();
+    Vector v2 = Vector::randomUnitVector();
+    Vector v3 = Vector::randomUnitVector();
 
-    auto groundMat = std::make_shared<Diffuse>(Vector(0.5, 1, 0.5));
-    auto floorSphere = std::make_shared<Sphere>(Vector(0, -100.5, -1), 100, groundMat);
-
-    Camera c(Vector(0, 0, 0), 16./9, 90, 1);
-    Renderer r = Renderer(120, 25, 10, Vector(), 16./9);
-    r.addShape(sphere);
-    r.addShape(floorSphere);
-    r.render(c);
+    std::cout << v1 << std::endl;
+    std::cout << v2 << std::endl;
+    std::cout << v3 << std::endl;
 
     return 0;
 }
